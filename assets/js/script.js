@@ -55,7 +55,7 @@ jQuery(document).ready(function($) {
                 console.log('the song is finished YO. Change the tune!', this);
             },
             whileplaying: function() {
-                console.log('antall millisekunder streamet: ', this.position);
+                console.log('antall prosent streamet: ', Math.round((this.position/this.duration)*10000)/100 + '%');
             }
         },function(sound){
             console.log(sound);

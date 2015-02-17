@@ -94,6 +94,6 @@ gulp.task('watch', function() {
 
 });
 
-gulp.task('default', ['sass', 'express', 'livereload', 'assets', 'templates', 'watch'], function() {
+gulp.task('default', ['sass', 'express', 'livereload', 'assets', 'templates', 'watch', 'html'], function() {
 
 });

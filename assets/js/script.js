@@ -46,9 +46,11 @@ jQuery(document).ready(function($) {
         var latest = playlist.length-1;
         resolveUrl(playlist[latest]);
 
-    }
+    };
+
     function playTrack(track){
-        SC.stream(track, function(sound){
+        console.log('track', track);
+        SC.stream(track.stream_url, function(sound){
             console.log(sound);
             sound.play();
         });
@@ -57,7 +59,7 @@ jQuery(document).ready(function($) {
     function addTrack(track, prependTo){
         var html = Marmelad.templates.searchtrack(track);
         var trackElement = document.createElement('li');
-        trackElement.setAttribute('class', 'track')
+        trackElement.setAttribute('class', 'track');
         trackElement.innerHTML = html;
         trackElement.addEventListener('click', function(){
              // ws.send(JSON.stringify(track.stream_url));
@@ -80,6 +82,7 @@ jQuery(document).ready(function($) {
     }
 
     function resolveUrl(trackPermaUrl, callback){
+        console.log(trackPermaUrl);
         SC.get('/resolve', { url: trackPermaUrl }, function(track) {
             addTrack(track, nowPlaying);
             playTrack(track);

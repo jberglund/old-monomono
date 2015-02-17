@@ -11,7 +11,7 @@ wss.broadcast = function(data) {
 var playlist = [];
 // use like this:
 wss.on('connection', function(ws) {
-
+    wss.broadcast(JSON.stringify(playlist));
 	ws.on('message', function(track) {
 		playlist.push(track);
 		console.log(playlist);

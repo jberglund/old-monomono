@@ -1,0 +1,108 @@
+jQuery(document).ready(function($) {
+
+    SC.initialize({
+        client_id: "182a16fc73b271495eff193ab61b215c",
+        redirect_uri: "http://localhost:4000/callback.html",
+    });
+
+
+    var content = $('#screen');
+    var searchContainer = $('#search');
+    var nowPlaying = $('.now-playing');
+    var ws = new WebSocket('ws://localhost:8080');
+    var currentTrack;
+    function createTrack(track){
+        this.track = document.createElement('li');
+        this.track.setAttribute('class','track');
+
+        this.track.setAttribute('data-track', track.url);
+        this.trackArt = document.createElement('img');
+        if(track.artwork_url){
+           this.trackArt.setAttribute('src', track.artwork_url);
+        }
+        var text = document.createTextNode(track.title);
+        this.track.appendChild(this.trackArt);
+        this.track.appendChild(text);
+        return this.track;
+    }
+
+    ws.onopen = function() {
+        console.log('Connected');
+    };
+
+    var listUrl = document.getElementById('url');
+    function lol(){
+        searchSoundCloud(listUrl.value)
+    }
+
+    addInputCallback(listUrl, lol, 300);
+
+
+    ws.onmessage = function(msg) {
+        var playlist = JSON.parse(msg.data);
+        SC.streamStopAll();
+        nowPlaying.empty();
+
+        var latest = playlist.length-1;
+        resolveUrl(playlist[latest]);
+
+    }
+    function playTrack(track){
+        SC.stream(track, function(sound){
+            console.log(sound);
+            sound.play();
+        });
+    }
+
+    function addTrack(track, prependTo){
+        var html = Marmelad.templates.searchtrack(track);
+        var trackElement = document.createElement('li');
+        trackElement.setAttribute('class', 'track')
+        trackElement.innerHTML = html;
+        trackElement.addEventListener('click', function(){
+             // ws.send(JSON.stringify(track.stream_url));
+
+             ws.send(track.permalink_url);
+        });
+        prependTo.prepend(trackElement);
+    }
+
+    function searchSoundCloud(string){
+        SC.get('/tracks', { q: string, limit: 5 }, function(tracks) {
+            for(var index in tracks ){
+
+                // Skip if step is not streamable
+                if(!tracks[index].streamable) continue;
+
+                addTrack(tracks[index], searchContainer);
+            }
+        });
+    }
+
+    function resolveUrl(trackPermaUrl, callback){
+        SC.get('/resolve', { url: trackPermaUrl }, function(track) {
+            addTrack(track, nowPlaying);
+            playTrack(track);
+        });
+    }
+
+
+    $(document).keydown(function(e) {
+        switch(e.which) {
+            case 37: // left
+            break;
+
+            case 38: // up
+            break;
+
+            case 39: // right
+            break;
+
+            case 40: // down
+            break;
+
+            default: return; // exit this handler for other keys
+        }
+        e.preventDefault(); // prevent the default action (scroll / move caret)
+    });
+});

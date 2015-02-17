@@ -69,9 +69,10 @@ jQuery(document).ready(function($) {
         trackElement.setAttribute('class', 'track');
         trackElement.innerHTML = html;
         trackElement.addEventListener('click', function(){
-             // ws.send(JSON.stringify(track.stream_url));
-
-             ws.send(track.permalink_url);
+             ws.send({
+                 name: 'newtrack',
+                 track: track.permalink_url
+             });
         });
         prependTo.prepend(trackElement);
     }
@@ -95,6 +96,12 @@ jQuery(document).ready(function($) {
             playTrack(track);
         });
     }
+
+    $(document).on('click', '#reset', function() {
+        ws.send({
+            name: 'reset'
+        });
+    });
 
 
     $(document).keydown(function(e) {

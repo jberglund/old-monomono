@@ -22,9 +22,13 @@ var playlist = [];
 // use like this:
 wss.on('connection', function(ws) {
     wss.broadcast(JSON.stringify(playlist));
-	ws.on('message', function(track) {
-		playlist.push(track);
-		console.log(playlist);
-		wss.broadcast(JSON.stringify(playlist));
+	ws.on('message', function(msg) {
+        if (msg.name == 'newtrack') {
+    		playlist.push(msg.track);
+    		console.log(playlist);
+    		wss.broadcast(JSON.stringify(playlist));
+        } else if (msg.name == 'reset') {
+            playlist = [];
+        }
 	});
 });

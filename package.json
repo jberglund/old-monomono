@@ -2,6 +2,7 @@
   "name": "monomono",
   "version": "1.0.0",
   "description": "Listen to SoundCloud together",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
@@ -19,5 +20,12 @@
     "tiny-lr": "~0.1.5",
     "express": "~4.11.2",
     "connect-livereload": "~0.5.3"
+  },
+  "dependencies": {
+    "express": "~4.11.2",
+    "ws": "~0.7.1",
+  },
+  "engines": {
+      "node": "0.10.x"
   }
 }

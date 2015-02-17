@@ -9,7 +9,7 @@ jQuery(document).ready(function($) {
     var content = $('#screen');
     var searchContainer = $('#search');
     var nowPlaying = $('.now-playing');
-    var ws = new WebSocket('ws://localhost:8080');
+    var ws = new WebSocket('ws://localhost:5000');
     var currentTrack;
     function createTrack(track){
         this.track = document.createElement('li');

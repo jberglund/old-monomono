@@ -50,7 +50,14 @@ jQuery(document).ready(function($) {
 
     function playTrack(track){
         console.log('track', track);
-        SC.stream(track.stream_url, function(sound){
+        SC.stream(track.stream_url, {
+            onfinish: function() {
+                console.log('the song is finished YO. Change the tune!', this);
+            },
+            whileplaying: function() {
+                console.log('antall millisekunder streamet: ', this.position);
+            }
+        },function(sound){
             console.log(sound);
             sound.play();
         });

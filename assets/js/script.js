@@ -32,27 +32,28 @@ jQuery(document).ready(function($) {
 
     addInputCallback(listUrl, lol, 300);
 
-    socket.on('playlist', function(playlist) {
-        console.log('playlist', playlist);
-        if (playlist.length === 0) return;
-
+    socket.on('playSong', function(track, skipTo) {
+        console.log('playSong', track, skipTo);
         SC.streamStopAll();
         nowPlaying.empty();
 
-        var latest = playlist.length-1;
-        resolveUrl(playlist[latest]);
+        resolveUrl(track, skipTo);
     });
 
-    function playTrack(track){
-        console.log('track', track);
+    function playTrack(track, skipTo){
+        console.log('play track', track);
         SC.stream(track.stream_url, {
             onfinish: function() {
+                //egentlig skal starting av neste låt skje fra server...
+                //men vi kan vurdere å sende en beskjed herfra til serveren
+                //om at noen er ferdig allerede?
                 console.log('the song is finished YO. Change the tune!', this);
             },
             whileplaying: function() {
                 nowPlaying.find('.track__played span').css('width', Math.round((this.position/this.duration)*10000)/100 + '%');
-            }
-        },function(sound){
+            },
+            position: skipTo
+        }, function(sound){
             console.log(sound);
             sound.play();
         });
@@ -65,7 +66,7 @@ jQuery(document).ready(function($) {
         trackElement.innerHTML = html;
         console.log('add track', track);
         trackElement.addEventListener('click', function(){
-            socket.emit('newtrack', track.permalink_url);
+            socket.emit('newtrack', track.permalink_url, track.duration);
         });
         prependTo.prepend(trackElement);
     }
@@ -82,11 +83,11 @@ jQuery(document).ready(function($) {
         });
     }
 
-    function resolveUrl(trackPermaUrl, callback){
+    function resolveUrl(trackPermaUrl, skipTo){
         console.log(trackPermaUrl);
         SC.get('/resolve', { url: trackPermaUrl }, function(track) {
             addTrack(track, nowPlaying);
-            playTrack(track);
+            playTrack(track, skipTo);
         });
     }
 

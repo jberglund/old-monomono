@@ -4,11 +4,12 @@
   "description": "Listen to SoundCloud together",
   "main": "server.js",
   "scripts": {
+    "build": "gulp",
     "start": "node server.js"
   },
   "author": "Jacob Berglund, Andreas Winther",
   "license": "BSD-2-Clause",
-  "devDependencies": {
+  "dependencies": {
     "gulp-plumber": "~0.6.6",
     "gulp-concat": "~2.5.0",
     "gulp-declare": "~0.3.0",
@@ -21,11 +22,6 @@
     "express": "~4.11.2",
     "socket.io": "~1.3.4",
     "connect-livereload": "~0.5.3"
-  },
-  "dependencies": {
-    "express": "~4.11.2",
-    "socket.io": "~1.3.4",
-    "ws": "~0.7.1"
   },
   "engines": {
       "node": "0.10.x"

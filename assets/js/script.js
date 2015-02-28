@@ -5,11 +5,10 @@ jQuery(document).ready(function($) {
         redirect_uri: "http://localhost:4000/callback.html",
     });
 
-
     var content = $('#screen');
     var searchContainer = $('#search');
+    var socket = io.connect(location.hostname === 'localhost' ? 'localhost:5000' : '/');
     var nowPlaying = $('.now-playing');
-    var ws = new WebSocket('ws://localhost:5000');
     var currentTrack;
     function createTrack(track){
         this.track = document.createElement('li');
@@ -26,10 +25,6 @@ jQuery(document).ready(function($) {
         return this.track;
     }
 
-    ws.onopen = function() {
-        console.log('Connected');
-    };
-
     var listUrl = document.getElementById('url');
     function lol(){
         searchSoundCloud(listUrl.value)
@@ -37,16 +32,16 @@ jQuery(document).ready(function($) {
 
     addInputCallback(listUrl, lol, 300);
 
-
-    ws.onmessage = function(msg) {
-        var playlist = JSON.parse(msg.data);
+    socket.on('playlist', function(playlist) {
+        console.log('playlist', playlist);
+        if (playlist.length === 0) return;
+        
         SC.streamStopAll();
         nowPlaying.empty();
 
         var latest = playlist.length-1;
         resolveUrl(playlist[latest]);
-
-    };
+    });
 
     function playTrack(track){
         console.log('track', track);
@@ -69,10 +64,7 @@ jQuery(document).ready(function($) {
         trackElement.setAttribute('class', 'track');
         trackElement.innerHTML = html;
         trackElement.addEventListener('click', function(){
-             ws.send({
-                 name: 'newtrack',
-                 track: track.permalink_url
-             });
+            socket.emit('newtrack', track.permalink_url);
         });
         prependTo.prepend(trackElement);
     }
@@ -98,9 +90,7 @@ jQuery(document).ready(function($) {
     }
 
     $(document).on('click', '#reset', function() {
-        ws.send({
-            name: 'reset'
-        });
+        socket.emit('reset');
     });
 
 

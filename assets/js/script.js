@@ -35,7 +35,7 @@ jQuery(document).ready(function($) {
     socket.on('playlist', function(playlist) {
         console.log('playlist', playlist);
         if (playlist.length === 0) return;
-        
+
         SC.streamStopAll();
         nowPlaying.empty();
 
@@ -50,7 +50,7 @@ jQuery(document).ready(function($) {
                 console.log('the song is finished YO. Change the tune!', this);
             },
             whileplaying: function() {
-                console.log('antall prosent streamet: ', Math.round((this.position/this.duration)*10000)/100 + '%');
+                nowPlaying.find('.track__played span').css('width', Math.round((this.position/this.duration)*10000)/100 + '%');
             }
         },function(sound){
             console.log(sound);
@@ -63,6 +63,7 @@ jQuery(document).ready(function($) {
         var trackElement = document.createElement('li');
         trackElement.setAttribute('class', 'track');
         trackElement.innerHTML = html;
+        console.log('add track', track);
         trackElement.addEventListener('click', function(){
             socket.emit('newtrack', track.permalink_url);
         });

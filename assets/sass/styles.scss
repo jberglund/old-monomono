@@ -114,6 +114,19 @@ h1, h2, h3, h4{
 		color: $active-track-title;
 	}
 }
+
+.track__played {
+	border: 1px solid #ccc;
+	height: 30px;
+	width: 90%;
+
+	span {
+		display: block;
+		height: 100%;
+		background: #aca;
+		width: 0;
+	}
+}
 .track__username{
 	color: $user;
 	.now-playing &{

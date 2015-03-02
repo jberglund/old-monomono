@@ -61,6 +61,10 @@ h1, h2, h3, h4{
 	padding: 0.5em 0.8em;
 	border-radius: 2px;
 	margin-right: 0.5em;
+	&:hover{
+		background-color: $light-purple;
+
+	}
 }
 
 .logo{
@@ -76,7 +80,7 @@ h1, h2, h3, h4{
 	background-color: $secondary-bg-color;
 	padding: 1em 2em;
 	z-index: 200;
-	width: 80%;
+	width: 50%;
 	float: right;
 }
 .search-bar{

@@ -98,7 +98,7 @@ jQuery(document).ready(function($) {
         });
     }
 
-    $(document).on('click', '#reset', function() {
+    $(document).on('click', '#reset', function() {
         socket.emit('reset');
     });
 

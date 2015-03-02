@@ -8,7 +8,8 @@ plumber = require('gulp-plumber'),
 wrap = require('gulp-wrap'),
 concat = require('gulp-concat'),
 declare = require('gulp-declare'),
-handlebars = require('gulp-handlebars');
+handlebars = require('gulp-handlebars'),
+runSeq = require('run-sequence');
 
 gulp.task('express', function() {
 	var express = require('express');
@@ -94,6 +95,11 @@ gulp.task('watch', function() {
 
 });
 
-gulp.task('default', ['sass', 'express', 'livereload', 'assets', 'templates', 'watch', 'html'], function() {
+gulp.task('default', ['sass', 'js', 'express', 'livereload', 'assets', 'templates', 'watch', 'html'], function() {
 
+});
+
+
+gulp.task('heroku:production', function(){
+	runSeq('sass', 'js', 'assets', 'templates', 'html');
 });

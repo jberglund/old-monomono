@@ -5,11 +5,12 @@ jQuery(document).ready(function($) {
         redirect_uri: "http://localhost:4000/callback.html",
     });
 
-    var content = $('#screen');
-    var searchContainer = $('#search');
-    var socket = io.connect(location.hostname === 'localhost' ? 'localhost:5000' : '/');
-    var nowPlaying = $('.now-playing');
-    var currentTrack;
+    var content = $('#screen'),
+        searchContainer = $('#search'),
+        socket = io.connect(location.hostname === 'localhost' ? 'localhost:5000' : '/'),
+        nowPlaying = $('.now-playing'),
+        currentTrack,
+        mute = $('#mute');
     function createTrack(track){
         this.track = document.createElement('li');
         this.track.setAttribute('class','track');
@@ -105,6 +106,12 @@ jQuery(document).ready(function($) {
     $('#iosplay').on('click', function() {
         console.log('ios play');
         currentTrack.play();
+    });
+    $(document).on('click', function() {
+        if (currentTrack) {
+            currentTrack.setVolume(mute.hasClass('mute') ? 100 : 0);
+            mute.toggleClass('mute');
+        }
     });
 
     socket.on('playlist', function(playlist) {

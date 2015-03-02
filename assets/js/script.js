@@ -7,7 +7,7 @@ jQuery(document).ready(function($) {
 
     var content = $('#screen'),
         searchContainer = $('#search'),
-        socket = io.connect(location.hostname === 'localhost' ? 'localhost:5000' : '/'),
+        socket = io.connect(location.hostname === 'localhost' ? 'localhost:5000' : '/:5000'),
         nowPlaying = $('.now-playing'),
         currentTrack,
         mute = $('#mute');
@@ -28,7 +28,7 @@ jQuery(document).ready(function($) {
 
     var listUrl = document.getElementById('url');
     function lol(){
-        searchSoundCloud(listUrl.value)
+        searchSoundCloud(listUrl.value);
     }
 
     addInputCallback(listUrl, lol, 300);

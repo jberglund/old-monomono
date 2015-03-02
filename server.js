@@ -11,12 +11,13 @@ app.use(express.static(__dirname + "/dist"));
 var playlist = [],
     start;
 
-// use like this:
 io.on('connection', function(socket) {
     console.log('connected to io');
+
     if (playlist.length) {
         console.log('sending first song', playlist[0]);
         socket.emit('playSong', playlist[0], (new Date()).getTime() - start);
+        socket.emit('playlist', playlist);
     }
 	socket.on('newtrack', function(track) {
 		playlist.push(track);
@@ -27,6 +28,7 @@ io.on('connection', function(socket) {
 
     socket.on('reset', function() {
         playlist = [];
+        console.log('Resetted');
     });
 
     socket.on('getPlaylist', function() {

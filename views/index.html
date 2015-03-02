@@ -6,26 +6,34 @@
 	<link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
-	<header>
-		<span id="reset">Reset the shit</span> |
-		<span id="showPlaylist">What's playing?</span> |
-		<span id="iosplay">iOS play</span> |
-		<span id="mute">Mute</span>
-	</header>
-	<div class="container">
-		<div class="logo">monomono</div>
-		<div class="now-playing">
 
-		</div>
+	<header class="masthead">
+		<div class="logo">monomono</div>
 		<div class="search-container">
 			<input type="text" class="search-bar"  id="url" placeholder="Search" autofocus />
+			<ul class="js-search-result search-result">
+				<!-- template -->
+			</ul>
 		</div>
-		<ul id="search" class="search-result">
+	</header>
+	<div class="container">
+		<div class="controls">
+			<span class="control-button js-reset" id="reset">Reset the shit</span>
+			<span class="control-button js-show-playlist" id="showPlaylist">What's playing?</span>
+			<span class="control-button js-iosplay" id="iosplay">iOS play</span>
+			<span class="control-button js-mute" id="mute">Mute</span>
+		</div>
 
-		</ul>
-		<div id="playlist">
+		<div class="js-now-playing now-playing">
+			<!-- template -->
+		</div>
+
+		<div class="js-playlist playlist">
 			<span class="close">&times;</span>
-			<ul></ul>
+			<h4>Playlist</h4>
+			<ul>
+				<!-- template -->
+			</ul>
 		</div>
 	</div>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>

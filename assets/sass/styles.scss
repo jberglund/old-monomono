@@ -1,10 +1,18 @@
-$track-title: 			#000;
-$user: 					#acbcbf;
-$menu:	 				#feffba;
-$active-track-bg: 		#8273ed;
-$active-track-title: 	#fff;
-$active-track-user:		#aea4f3;
-$secondary-bg-color:	#feffba;
+$purple: 				#8273ed;
+$white: 				#fff;
+$light-yellow:			#feffba;
+$black:					#000;
+$light-green:			#acbcbf;
+$light-purple:			#aea4f3;
+
+$track-title: 			$black;
+$user: 					$light-green;
+$menu:	 				$light-yellow;
+$active-track-bg: 		$purple;
+$active-track-title: 	$white;
+$active-track-user:		$light-purple;
+$secondary-bg-color:	$light-yellow;
+$seekbar: 				darken($purple, 40%);
 
 *{
 	box-sizing: border-box;
@@ -21,16 +29,10 @@ h1, h2, h3, h4{
 }
 
 .container{
-	max-width: 780px;
-	margin: 0 auto;
+	padding-top: 105px;
 }
 
-header {
-	max-width: 780px;
-	margin: 30px auto 0;
-}
-
-#mute.mute { text-decoration: line-through; }
+.js-state--mute { text-decoration: line-through; }
 #showPlaylist.new:after {
 	content: "new";
 	font-size: .6em;
@@ -42,13 +44,40 @@ header {
 	border-radius: 3px;
 }
 
+.masthead {
+	position: fixed;
+	top: 0;
+	height: 120px;
+	width: 100%;
+	z-index: 200;
+}
+.controls{
+	position: fixed;
+	bottom: 1em;
+	left: 1em;
+}
+.control-button{
+	background-color: $light-yellow;
+	padding: 0.5em 0.8em;
+	border-radius: 2px;
+	margin-right: 0.5em;
+}
+
 .logo{
 	font-size: 2em;
-	padding: 1em;
+	line-height: 105px;
+	padding: 0 1em;
+	display: inline-block;
+	background-color: #FFF;
+	z-index: 200;
+	float: left;
 }
 .search-container{
 	background-color: $secondary-bg-color;
-	padding: 2em;
+	padding: 1em 2em;
+	z-index: 200;
+	width: 80%;
+	float: right;
 }
 .search-bar{
 	background-color: $secondary-bg-color;
@@ -66,11 +95,7 @@ header {
 	}
 }
 .search-result {
-	max-width: 600px;
-	margin: 0 auto;
 	padding: 0;
-	overflow: hidden;
-
 	.track__played { display: none; }
 }
 
@@ -88,8 +113,12 @@ header {
 	width: 100%;
 	position: relative;
 	cursor: pointer;
+	&.selected{
+		background-color: darken($light-yellow, 20%);
+	}
 	&:after{
-		display: block;
+		//display: block;
+		display: none;
 		content: "";
 		position: absolute;
 		right: 0;
@@ -98,10 +127,22 @@ header {
 		width: 3em;
 		background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%); /* W3C */
 	}
+	.now-playing &:after{
+		display: none;
+	}
 	.now-playing &{
 		background-color: $active-track-bg;
 	}
+	.search-container &{
+		height: 100px;
+	}
 }
+
+.search-container .track{
+	font-size: 12px;
+}
+
+
 .track-inner{
 
 }
@@ -125,6 +166,9 @@ header {
 		display: inline-block;
 		width: 99%;
 	}
+	.search-container &{
+		width: calc(100% - 68px);
+	}
 }
 
 .track__img {
@@ -135,6 +179,14 @@ header {
 	border-radius: 50%;
 	overflow: hidden;
 	padding: 22px;
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	.search-container &{
+		width: 60px;
+		height: 60px;
+		padding: 5px;
+	}
 }
 .track__title{
 	color: $track-title;
@@ -145,21 +197,27 @@ header {
 	.now-playing &{
 		color: $active-track-title;
 	}
+
 }
 
-.track__played {
-	border: 1px solid #ccc;
-	height: 30px;
+.track__seek {
+	display: none;
+	height: 15px;
 	width: 90%;
 	overflow: hidden;
-
-	span {
+	.now-playing &{
 		display: block;
-		height: 100%;
-		background: #aca;
-		width: 100%;
 	}
 }
+
+.track__seek__indicator{
+	display: block;
+	height: 100%;
+	background: $seekbar;
+	width: 100%;
+	position: relative;
+}
+
 .track__username{
 	color: $user;
 	.now-playing &{
@@ -167,18 +225,7 @@ header {
 	}
 }
 
-#playlist {
-	position: absolute;
-	top: 10%;
-	width: 100%;
-	border: 2px solid #000;
-	padding: 20px;
-	max-width: 780px;
-	transform: translateX(-50%);
-	left: 50%;
-	list-style: none;
-	background: #fff;
-	display: none;
+.playlist {
 
 	.close {
 		position: absolute;

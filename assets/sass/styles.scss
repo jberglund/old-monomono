@@ -96,7 +96,20 @@ h1, h2, h3, h4{
 	top: 0;
 	right: 0;
 	height: 100%;
-	display: table;
+	display: block;
+	&:before {
+		content: "";
+		display: inline-block;
+		width: 0;
+		height: 100%;
+		vertical-align: middle;
+	}
+
+	.va {
+		vertical-align: middle;
+		display: inline-block;
+		width: 99%;
+	}
 }
 
 .track__img {
@@ -123,12 +136,13 @@ h1, h2, h3, h4{
 	border: 1px solid #ccc;
 	height: 30px;
 	width: 90%;
+	overflow: hidden;
 
 	span {
 		display: block;
 		height: 100%;
 		background: #aca;
-		width: 0;
+		width: 100%;
 	}
 }
 .track__username{
@@ -136,9 +150,4 @@ h1, h2, h3, h4{
 	.now-playing &{
 		color: $active-track-user;
 	}
-}
-
-.va{
-	display: table-cell;
-	vertical-align: middle;
 }

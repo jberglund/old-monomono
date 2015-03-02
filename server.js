@@ -10,7 +10,8 @@ http.listen(port, function(){
   console.log('listening on *:' + port);
 });
 
-var playlist = [];
+var playlist = [],
+    start;
 // use like this:
 io.on('connection', function(socket) {
     console.log('connected to io');

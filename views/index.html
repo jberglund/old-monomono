@@ -6,33 +6,39 @@
 	<link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
-<span id="reset">Reset the shit</span> |
-<span id="playlist">What's playing?</span> |
-<span id="iosplay">iOS play</span> |
-<span id="mute">Mute</span>
-<div class="container">
-<div class="logo">monomono</div>
-<div class="now-playing">
+	<header>
+		<span id="reset">Reset the shit</span> |
+		<span id="showPlaylist">What's playing?</span> |
+		<span id="iosplay">iOS play</span> |
+		<span id="mute">Mute</span>
+	</header>
+	<div class="container">
+		<div class="logo">monomono</div>
+		<div class="now-playing">
 
-</div>
-<div class="search-container">
-	<input type="text" class="search-bar"  id="url" placeholder="Search" autofocus />
-</div>
-	<ul id="search" class="search-result">
+		</div>
+		<div class="search-container">
+			<input type="text" class="search-bar"  id="url" placeholder="Search" autofocus />
+		</div>
+		<ul id="search" class="search-result">
 
-	</ul>
-</div>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-<script src="//connect.soundcloud.com/sdk.js"></script>
-<script src="assets/js/vendor/handlebars-v2.0.0.js"></script>
-<script src="assets/js/templates.js"></script>
-<script src="assets/js/helpers.js"></script>
-<script src="assets/js/vendor/socket.js"></script>
-<script src="assets/js/script.js"></script>
+		</ul>
+		<div id="playlist">
+			<span class="close">&times;</span>
+			<ul></ul>
+		</div>
+	</div>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<script src="//connect.soundcloud.com/sdk.js"></script>
+	<script src="assets/js/vendor/handlebars-v2.0.0.js"></script>
+	<script src="assets/js/templates.js"></script>
+	<script src="assets/js/helpers.js"></script>
+	<script src="assets/js/vendor/socket.js"></script>
+	<script src="assets/js/script.js"></script>
 
 
-<script src="//use.typekit.net/qps7jzk.js"></script>
-<script>try{Typekit.load();}catch(e){}</script>
+	<script src="//use.typekit.net/qps7jzk.js"></script>
+	<script>try{Typekit.load();}catch(e){}</script>
 
 </body>
 </html>

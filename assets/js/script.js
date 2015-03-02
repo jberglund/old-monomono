@@ -7,9 +7,10 @@ jQuery(document).ready(function($) {
 
     var content = $('#screen'),
         searchContainer = $('#search'),
-        socket = io.connect(location.hostname === 'localhost' ? 'localhost:5000' : 'http://monomono.herokuapp.com/'),
+        socket = io.connect(location.hostname === 'localhost' ? 'http://monomono.herokuapp.com/' : 'http://monomono.herokuapp.com/'),
         nowPlaying = $('.now-playing'),
         currentTrack,
+        $playlist = $('#playlist ul'),
         mute = $('#mute');
     function createTrack(track){
         this.track = document.createElement('li');
@@ -57,6 +58,7 @@ jQuery(document).ready(function($) {
             whileplaying: function() {
                 nowPlaying.find('.track__played span').css('transform', 'translateX(' + ((Math.round((this.position/this.duration)*10000)/100)-100) + '%)');
             },
+            volume: mute.hasClass('mute') ? 0 : 100,
             position: skipTo
         }, function(sound){
             console.log('sound', sound);
@@ -98,12 +100,27 @@ jQuery(document).ready(function($) {
         });
     }
 
+<<<<<<< HEAD
     $(document).on('click', '#reset', function() {
+=======
+    function populatePlaylist(playlist) {
+        var html = '';
+        for (var i = 0; i < playlist.length; i++) {
+            html += '<li>' + playlist[i].title + '</li>';
+        }
+        $playlist.html(html);
+    }
+
+    $(document).on('click', '#reset', function() {
+>>>>>>> monomono/master
         socket.emit('reset');
     });
 
-    $(document).on('click', '#playlist', function() {
+    $(document).on('click', '#showPlaylist', function() {
         socket.emit('getPlaylist');
+    });
+    $(document).on('click', '#playlist .close', function() {
+        $playlist.parent().hide();
     });
     $('#iosplay').on('click', function() {
         console.log('ios play');
@@ -117,13 +134,11 @@ jQuery(document).ready(function($) {
     });
 
     socket.on('playlist', function(playlist) {
-        console.log('full playlist');
-        var text = '';
-        for (var i = 0; i < playlist.length; i++) {
-            text += (i + 1) + ': ' + playlist[i].title + '\n';
-            console.log('song', playlist[i].title);
-        }
-        alert(text);
+        populatePlaylist(playlist);
+        $playlist.parent().show();
+    });
+    socket.on('playlistUpdate', function(playlist) {
+        $('#showPlaylist').addClass('new');
     });
 
     socket.on('noMore', function() {

@@ -6,7 +6,7 @@ jQuery(document).ready(function($){
 
     var content = $('#screen'),
         searchContainer = $('#search'),
-        socket = io.connect(location.hostname === 'localhost' ? 'https://monomono.herokuapp.com/' : 'https://monomono.herokuapp.com/'),
+        socket = io.connect(location.hostname === 'localhost' ? 'localhost:9988' : 'https://monomono.herokuapp.com:9988/'),
         nowPlaying = $('.now-playing'),
         currentTrack,
         $playlist = $('#playlist ul'),

@@ -4,7 +4,7 @@
   "description": "Listen to SoundCloud together",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "node server.js"
   },
   "author": "Jacob Berglund, Andreas Winther, Pål Eirik Strøm",
   "license": "BSD-2-Clause",

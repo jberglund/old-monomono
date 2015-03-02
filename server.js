@@ -15,13 +15,13 @@ io.on('connection', function(socket) {
     console.log('connected to io');
 
     if (playlist.length) {
-        console.log('sending first song: ', playlist[0].title);
+        console.log('sending first song', playlist[0]);
         socket.emit('playSong', playlist[0], (new Date()).getTime() - start);
         socket.emit('playlist', playlist);
     }
 	socket.on('newtrack', function(track) {
 		playlist.push(track);
-        console.log('added track, length: ', playlist.length);
+        console.log('added track', playlist);
         if (playlist.length === 1) playNextSong(true);
         socket.broadcast.emit('playlistUpdate', playlist);
 	});
@@ -32,7 +32,6 @@ io.on('connection', function(socket) {
     });
 
     socket.on('getPlaylist', function() {
-        console.log('get playlist');
         socket.emit('playlist', playlist);
     });
 });

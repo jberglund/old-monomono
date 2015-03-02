@@ -18,10 +18,13 @@ function addInputCallback(element, callback, delay) {
 function bindSearchKeys(items){
     var currentlySelectedItem;
     var allItems = items;
-
+    console.log(allItems);
     $(document).keydown(function(e) {
 
         switch(e.which) {
+            case 37: // left
+            break;
+
             case 38: // up
             console.log('up');
                 if(currentlySelectedItem){
@@ -38,7 +41,11 @@ function bindSearchKeys(items){
                 }
             break;
 
+            case 39: // right
+            break;
+
             case 40: // down
+            console.log('down');
                 if(currentlySelectedItem){
                     currentlySelectedItem.removeClass('selected');
                     next = currentlySelectedItem.next();
@@ -52,8 +59,7 @@ function bindSearchKeys(items){
                     currentlySelectedItem = allItems.eq(0).addClass('selected');
                 }
             break;
-
-            case 13: // return key
+            case 13:
                 currentlySelectedItem.trigger('click');
             default: return; // exit this handler for other keys
         }

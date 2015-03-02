@@ -55,7 +55,7 @@ jQuery(document).ready(function($) {
                 console.log('the song is finished YO. Change the tune!', this);
             },
             whileplaying: function() {
-                nowPlaying.find('.track__played span').css('width', Math.round((this.position/this.duration)*10000)/100 + '%');
+                nowPlaying.find('.track__played span').css('transform', 'translateX(' + ((Math.round((this.position/this.duration)*10000)/100)-100) + '%)');
             },
             position: skipTo
         }, function(sound){
@@ -72,9 +72,11 @@ jQuery(document).ready(function($) {
         trackElement.setAttribute('class', 'track');
         trackElement.innerHTML = html;
         console.log('add track', track);
-        trackElement.addEventListener('click', function(){
-            socket.emit('newtrack', track);
-        });
+        if (!prependTo.hasClass('now-playing')) {
+            trackElement.addEventListener('click', function(){
+                socket.emit('newtrack', track);
+            });
+        }
         prependTo.prepend(trackElement);
     }
 

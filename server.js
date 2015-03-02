@@ -23,6 +23,7 @@ io.on('connection', function(socket) {
 		playlist.push(track);
         console.log('added track', playlist);
         if (playlist.length === 1) playNextSong(true);
+        socket.broadcast.emit('playlistUpdate', playlist);
 	});
 
     socket.on('reset', function() {

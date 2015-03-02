@@ -1,5 +1,4 @@
-jQuery(document).ready(function($) {
-
+jQuery(document).ready(function($){
     SC.initialize({
         client_id: "182a16fc73b271495eff193ab61b215c",
         redirect_uri: "http://localhost:4000/callback.html",
@@ -100,9 +99,9 @@ jQuery(document).ready(function($) {
         });
     }
 
-<<<<<<< HEAD
+
     $(document).on('click', '#reset', function() {
-=======
+
     function populatePlaylist(playlist) {
         var html = '';
         for (var i = 0; i < playlist.length; i++) {
@@ -112,7 +111,6 @@ jQuery(document).ready(function($) {
     }
 
     $(document).on('click', '#reset', function() {
->>>>>>> monomono/master
         socket.emit('reset');
     });
 
@@ -164,4 +162,5 @@ jQuery(document).ready(function($) {
         }
         e.preventDefault(); // prevent the default action (scroll / move caret)
     });
+});
 });

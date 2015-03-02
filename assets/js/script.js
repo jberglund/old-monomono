@@ -58,6 +58,7 @@ jQuery(document).ready(function($) {
             whileplaying: function() {
                 nowPlaying.find('.track__played span').css('transform', 'translateX(' + ((Math.round((this.position/this.duration)*10000)/100)-100) + '%)');
             },
+            volume: mute.hasClass('mute') ? 0 : 100,
             position: skipTo
         }, function(sound){
             console.log('sound', sound);

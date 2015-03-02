@@ -118,7 +118,7 @@ $(function(){
     });
 
     $(document).on('click', '#showPlaylist', function() {
-        console.log('show playlist');
+        $(this).removeClass('new');
         socket.emit('getPlaylist');
     });
 

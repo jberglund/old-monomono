@@ -1,4 +1,4 @@
-jQuery(document).ready(function($){
+$(function(){
     SC.initialize({
         client_id: "182a16fc73b271495eff193ab61b215c",
         redirect_uri: "http://localhost:4000/callback.html",
@@ -7,7 +7,6 @@ jQuery(document).ready(function($){
     var content = $('#screen'),
         searchContainer = $('#search'),
         appUrl = location.hostname === 'localhost' ? 'http://127.0.0.1:5000' : 'https://monomono.herokuapp.com/',
-
         socket = io.connect(appUrl, { resource: 'assets/js/vendor/socket.js' }),
         nowPlaying = $('.now-playing'),
         currentTrack,
@@ -106,9 +105,6 @@ jQuery(document).ready(function($){
         });
     }
 
-
-    $(document).on('click', '#reset', function() {
-
     function populatePlaylist(playlist) {
         var html = '';
         for (var i = 0; i < playlist.length; i++) {
@@ -122,8 +118,10 @@ jQuery(document).ready(function($){
     });
 
     $(document).on('click', '#showPlaylist', function() {
+        console.log('show playlist');
         socket.emit('getPlaylist');
     });
+
     $(document).on('click', '#playlist .close', function() {
         $playlist.parent().hide();
     });
@@ -132,6 +130,7 @@ jQuery(document).ready(function($){
         currentTrack.play();
     });
     $(document).on('click', '#mute', function() {
+        console.log('mute');
         if (currentTrack) {
             currentTrack.setVolume(mute.hasClass('mute') ? 100 : 0);
             mute.toggleClass('mute');
@@ -169,5 +168,4 @@ jQuery(document).ready(function($){
         }
         e.preventDefault(); // prevent the default action (scroll / move caret)
     });
-});
 });

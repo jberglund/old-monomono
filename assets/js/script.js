@@ -6,23 +6,30 @@ jQuery(document).ready(function($){
 
     var content = $('#screen'),
         searchContainer = $('#search'),
-        socket = io.connect(location.hostname === 'localhost' ? 'localhost:9988' : 'https://monomono.herokuapp.com:9988/'),
+        appUrl = location.hostname === 'localhost' ? 'http://127.0.0.1:5000' : 'https://monomono.herokuapp.com/',
+
+        socket = io.connect(appUrl, { resource: 'assets/js/vendor/socket.js' }),
         nowPlaying = $('.now-playing'),
         currentTrack,
         $playlist = $('#playlist ul'),
         mute = $('#mute');
+
+
     function createTrack(track){
         this.track = document.createElement('li');
         this.track.setAttribute('class','track');
-
         this.track.setAttribute('data-track', track.url);
         this.trackArt = document.createElement('img');
+
         if(track.artwork_url){
            this.trackArt.setAttribute('src', track.artwork_url);
         }
+
         var text = document.createTextNode(track.title);
+
         this.track.appendChild(this.trackArt);
         this.track.appendChild(text);
+
         return this.track;
     }
 

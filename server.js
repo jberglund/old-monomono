@@ -1,14 +1,12 @@
 var express = require("express");
 var app = express();
 var client = express();
-var http = require("http").Server(http);
-var io = require('socket.io')(http);
+var server = require("http").createServer(app);
+var io = require('socket.io')(server);
 var port = process.env.PORT || 5000;
 
 
-// Serve the client
 app.use(express.static(__dirname + "/dist"));
-app.listen(port);
 
 var playlist = [],
     start;
@@ -36,8 +34,9 @@ io.on('connection', function(socket) {
     });
 });
 
+server.listen(port);
 // Dedicated socket.io port.
-io.listen(9988);
+//io.listen(port);
 
 
 function playNextSong(isFirst) {

@@ -16,7 +16,7 @@ io.on('connection', function(socket) {
     console.log('connected to io');
     if (playlist.length) {
         console.log('sending first song', playlist[0]);
-        socket.emit('playSong', playlist[0], (new Date).getTime() - start);
+        socket.emit('playSong', playlist[0], (new Date()).getTime() - start);
     }
 	socket.on('newtrack', function(track) {
 		playlist.push(track);
@@ -41,6 +41,6 @@ function playNextSong(isFirst) {
     }
     console.log('playing next song', playlist);
     io.sockets.emit('playSong', playlist[0], 0);
-    start = (new Date).getTime();
+    start = (new Date()).getTime();
     setTimeout(playNextSong, playlist[0].duration + 10);
 }

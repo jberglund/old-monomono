@@ -107,7 +107,7 @@ jQuery(document).ready(function($) {
         console.log('ios play');
         currentTrack.play();
     });
-    $(document).on('click', function() {
+    $('#mute').on('click', function() {
         if (currentTrack) {
             currentTrack.setVolume(mute.hasClass('mute') ? 100 : 0);
             mute.toggleClass('mute');

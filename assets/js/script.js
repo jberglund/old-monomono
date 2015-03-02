@@ -1,9 +1,10 @@
-jQuery(document).ready(function($){
+$(function(){
     SC.initialize({
         client_id: "182a16fc73b271495eff193ab61b215c",
         redirect_uri: "http://localhost:4000/callback.html",
     });
 
+<<<<<<< HEAD
     var selector = {
         searchResult: $('.js-search-result'),
         nowPlaying: $('.js-now-playing'),
@@ -15,6 +16,11 @@ jQuery(document).ready(function($){
     }
 
     var appUrl = location.hostname === 'localhost' ? 'http://127.0.0.1:5000' : 'https://monomono.herokuapp.com/',
+=======
+    var content = $('#screen'),
+        searchContainer = $('#search'),
+        appUrl = location.hostname === 'localhost' ? 'http://127.0.0.1:5000' : 'https://monomono.herokuapp.com/',
+>>>>>>> monomono/master
         socket = io.connect(appUrl, { resource: 'assets/js/vendor/socket.js' }),
         currentTrack;
 
@@ -108,6 +114,7 @@ jQuery(document).ready(function($){
         });
     }
 
+<<<<<<< HEAD
     selector.reset.on('click', function() {
         socket.emit('reset');
     });
@@ -121,6 +128,34 @@ jQuery(document).ready(function($){
     });
 
     selector.mute.on('click', function() {
+=======
+    function populatePlaylist(playlist) {
+        var html = '';
+        for (var i = 0; i < playlist.length; i++) {
+            html += '<li>' + playlist[i].title + '</li>';
+        }
+        $playlist.html(html);
+    }
+
+    $(document).on('click', '#reset', function() {
+        socket.emit('reset');
+    });
+
+    $(document).on('click', '#showPlaylist', function() {
+        $(this).removeClass('new');
+        socket.emit('getPlaylist');
+    });
+
+    $(document).on('click', '#playlist .close', function() {
+        $playlist.parent().hide();
+    });
+    $('#iosplay').on('click', function() {
+        console.log('ios play');
+        currentTrack.play();
+    });
+    $(document).on('click', '#mute', function() {
+        console.log('mute');
+>>>>>>> monomono/master
         if (currentTrack) {
             currentTrack.setVolume(selector.mute.hasClass('js-state--mute') ? 100 : 0);
             selector.mute.toggleClass('js-state--mute');
@@ -138,4 +173,27 @@ jQuery(document).ready(function($){
     socket.on('noMore', function() {
         alert('No more tracks. Add some more, plz!');
     });
+<<<<<<< HEAD
+=======
+
+
+    $(document).keydown(function(e) {
+        switch(e.which) {
+            case 37: // left
+            break;
+
+            case 38: // up
+            break;
+
+            case 39: // right
+            break;
+
+            case 40: // down
+            break;
+
+            default: return; // exit this handler for other keys
+        }
+        e.preventDefault(); // prevent the default action (scroll / move caret)
+    });
+>>>>>>> monomono/master
 });

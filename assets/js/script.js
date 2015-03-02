@@ -5,12 +5,21 @@ jQuery(document).ready(function($) {
         redirect_uri: "http://localhost:4000/callback.html",
     });
 
+<<<<<<< Updated upstream
     var content = $('#screen'),
         searchContainer = $('#search'),
         socket = io.connect(location.hostname === 'localhost' ? 'localhost:5000' : '/'),
         nowPlaying = $('.now-playing'),
         currentTrack,
         mute = $('#mute');
+=======
+
+    var content = $('#screen');
+    var searchContainer = $('#search');
+    var nowPlaying = $('.now-playing');
+    var ws = new WebSocket('ws://agile-fjord-1949.herokuapp.com/');
+    var currentTrack;
+>>>>>>> Stashed changes
     function createTrack(track){
         this.track = document.createElement('li');
         this.track.setAttribute('class','track');

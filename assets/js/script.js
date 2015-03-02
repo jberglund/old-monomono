@@ -34,15 +34,19 @@ jQuery(document).ready(function($) {
 
     socket.on('playSong', function(track, skipTo) {
         console.log('playSong', track, skipTo);
+        if (!track) return;
         SC.streamStopAll();
         nowPlaying.empty();
-
-        resolveUrl(track, skipTo);
+        //resolveUrl(track, skipTo);
+        addTrack(track, nowPlaying);
+        playTrack(track, skipTo);
     });
 
     function playTrack(track, skipTo){
         console.log('play track', track);
         SC.stream(track.stream_url, {
+            useHTML5Audio: true,
+            preferFlash: false,
             onfinish: function() {
                 //egentlig skal starting av neste låt skje fra server...
                 //men vi kan vurdere å sende en beskjed herfra til serveren
@@ -54,8 +58,10 @@ jQuery(document).ready(function($) {
             },
             position: skipTo
         }, function(sound){
-            console.log(sound);
-            sound.play();
+            console.log('sound', sound);
+            currentTrack = sound;
+            if (sound)
+                sound.play();
         });
     }
 
@@ -66,24 +72,22 @@ jQuery(document).ready(function($) {
         trackElement.innerHTML = html;
         console.log('add track', track);
         trackElement.addEventListener('click', function(){
-            socket.emit('newtrack', track.permalink_url, track.duration);
+            socket.emit('newtrack', track);
         });
         prependTo.prepend(trackElement);
     }
 
     function searchSoundCloud(string){
         SC.get('/tracks', { q: string, limit: 5 }, function(tracks) {
-            for(var index in tracks ){
-
+            for (var index in tracks) {
                 // Skip if step is not streamable
                 if(!tracks[index].streamable) continue;
-
                 addTrack(tracks[index], searchContainer);
             }
         });
     }
 
-    function resolveUrl(trackPermaUrl, skipTo){
+    function resolveUrl(trackPermaUrl, skipTo) {
         console.log(trackPermaUrl);
         SC.get('/resolve', { url: trackPermaUrl }, function(track) {
             addTrack(track, nowPlaying);
@@ -93,6 +97,28 @@ jQuery(document).ready(function($) {
 
     $(document).on('click', '#reset', function() {
         socket.emit('reset');
+    });
+
+    $(document).on('click', '#playlist', function() {
+        socket.emit('getPlaylist');
+    });
+    $('#iosplay').on('click', function() {
+        console.log('ios play');
+        currentTrack.play();
+    });
+
+    socket.on('playlist', function(playlist) {
+        console.log('full playlist');
+        var text = '';
+        for (var i = 0; i < playlist.length; i++) {
+            text += (i + 1) + ': ' + playlist[i].title + '\n';
+            console.log('song', playlist[i].title);
+        }
+        alert(text);
+    });
+
+    socket.on('noMore', function() {
+        alert('No more tracks. Add some more, plz!');
     });
 
 

@@ -102,6 +102,7 @@ jQuery(document).ready(function($){
                     if (trackElement.classList.contains('added')) return;
                     trackElement.classList.add('added');
                     socket.emit('newtrack', track);
+                    $('.js-search-result').empty();
                 });
             });
             bindSearchKeys($('.search-result .track'));

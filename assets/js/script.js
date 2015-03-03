@@ -94,6 +94,7 @@ jQuery(document).ready(function($){
             addTracks(tracks, selector.searchResult, function(track, trackElement){
                 trackElement.addEventListener('click', function(){
                     socket.emit('newtrack', track);
+                    $('.js-search-result').empty();
                 });
 
             });

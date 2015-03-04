@@ -106,13 +106,14 @@ h1, h2, h3, h4{
 	.openSearch & { opacity: 1; }
 	ul {
 		background-color: $secondary-bg-color;
-		border-top: 3px solid black;
+		border-top: 1px solid rgba(0,0,0,.1);
 	}
 }
 .search-bar{
 	background-color: $secondary-bg-color;
 	width: calc(100% - 60px);
 	padding: 0.5em;
+	margin-bottom: 24px;
 	border: 0;
 	color: black;
 	font-size: 25px;

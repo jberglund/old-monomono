@@ -9,46 +9,39 @@ var port = process.env.PORT || 5000;
 app.use(express.static(__dirname + "/dist"));
 
 var playlist = [],
-    start;
+    start,
+    currentTrack = 0;
 
 io.on('connection', function(socket) {
     console.log('connected to io');
-
     if (playlist.length) {
-        console.log('sending first song', playlist[0]);
-        socket.emit('playSong', playlist[0], (new Date()).getTime() - start);
-        socket.emit('playlist', playlist);
+        console.log('sending first song', playlist[currentTrack]);
+        socket.emit('playSong', playlist[currentTrack], (new Date()).getTime() - start);
+        socket.emit('playlist', playlist, currentTrack);
     }
 	socket.on('newtrack', function(track) {
 		playlist.push(track);
         console.log('added track', playlist);
         if (playlist.length === 1) playNextSong(true);
-        socket.broadcast.emit('playlistUpdate', playlist);
+        io.sockets.emit('playlist', playlist, currentTrack);
 	});
 
     socket.on('reset', function() {
         playlist = [];
         console.log('Resetted');
     });
-
-    socket.on('getPlaylist', function() {
-        socket.emit('playlist', playlist);
-    });
 });
 
 server.listen(port);
-// Dedicated socket.io port.
-//io.listen(port);
 
-
-function playNextSong(isFirst) {
-    if (!isFirst) playlist.shift();
-    if (playlist.length === 0) {
-        io.sockets.emit('noMore');
-        return;
+function playNextSong() {
+    currentTrack++
+    if (currentTrack == playlist.length) {
+        currentTrack = 0;
     }
     console.log('playing next song', playlist);
-    io.sockets.emit('playSong', playlist[0], 0);
+    io.sockets.emit('playSong', playlist[currentTrack], 0);
+    io.sockets.emit('playlist', playlist, currentTrack);
     start = (new Date()).getTime();
-    setTimeout(playNextSong, playlist[0].duration + 10);
+    setTimeout(playNextSong, playlist[currentTrack].duration + 10);
 }

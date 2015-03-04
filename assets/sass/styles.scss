@@ -4,15 +4,14 @@ $light-yellow:			#feffba;
 $black:					#000;
 $light-green:			#acbcbf;
 $light-purple:			#aea4f3;
+$dark-gray:				#252523;
+$seekbar: 				#141414;
 
 $track-title: 			$black;
 $user: 					$light-green;
 $menu:	 				$light-yellow;
 $active-track-bg: 		$purple;
-$active-track-title: 	$white;
-$active-track-user:		$light-purple;
 $secondary-bg-color:	$light-yellow;
-$seekbar: 				darken($purple, 40%);
 
 *{
 	box-sizing: border-box;
@@ -21,6 +20,7 @@ body, html{
 	height: 100%;
 	width: 100%;
 	margin: 0;
+	background: $dark-gray;
 	font-family: "sofia-pro";
 }
 h1, h2, h3, h4{
@@ -29,20 +29,10 @@ h1, h2, h3, h4{
 }
 
 .container{
-	padding-top: 105px;
+	padding-top: 120px;
 }
 
 .js-state--mute { text-decoration: line-through; }
-#showPlaylist.new:after {
-	content: "new";
-	font-size: .6em;
-	background: red;
-	display: inline-block;
-	transform: translateY(-50%);
-	color: #fff;
-	padding: 0 5px 3px;
-	border-radius: 3px;
-}
 
 .masthead {
 	position: fixed;
@@ -50,14 +40,15 @@ h1, h2, h3, h4{
 	height: 120px;
 	width: 100%;
 	z-index: 200;
+	background: $light-yellow;
 }
 .controls{
 	position: fixed;
-	bottom: 1em;
-	left: 1em;
+	top: 1em;
+	right: 1em;
 }
 .control-button{
-	background-color: $light-yellow;
+	background-color: #fff;
 	padding: 0.5em 0.8em;
 	border-radius: 2px;
 	margin-right: 0.5em;
@@ -68,16 +59,29 @@ h1, h2, h3, h4{
 	line-height: 105px;
 	padding: 0 1em;
 	display: inline-block;
-	background-color: #FFF;
 	z-index: 200;
 	float: left;
 }
 .search-container{
 	background-color: $secondary-bg-color;
 	padding: 1em 2em;
+	top: 120px;
 	z-index: 200;
-	width: 80%;
-	float: right;
+	width: 100%;
+	left: 100%;
+	position: absolute;
+	transition: left .4s ease;
+
+	.close {
+		position: absolute;
+		top: 5px;
+		right: 15px;
+		font-size: 20px;
+	}
+
+	&.show {
+		left: 0;
+	}
 }
 .search-bar{
 	background-color: $secondary-bg-color;
@@ -99,18 +103,12 @@ h1, h2, h3, h4{
 	.track__played { display: none; }
 }
 
-#player{
-
-}
-
-.track-search-list{
-
-}
 .track{
 	list-style: none;
 	clear: both;
-	height: 144px;
+	height: 72px;
 	width: 100%;
+	font-size: 14px;
 	position: relative;
 	cursor: pointer;
 	&.selected{
@@ -136,20 +134,19 @@ h1, h2, h3, h4{
 	.search-container &{
 		height: 100px;
 	}
+
+	&.played { opacity: .25; }
 }
 
 .search-container .track{
 	font-size: 12px;
 }
 
-
-.track-inner{
-
-}
 .track__info{
 	position: absolute;
-	width: calc(100% - 148px);
+	width: calc(100% - 88px);
 	top: 0;
+	z-index: 2;
 	right: 0;
 	height: 100%;
 	display: block;
@@ -173,12 +170,14 @@ h1, h2, h3, h4{
 
 .track__img {
 	display: block;
+	z-index: 2;
 	position: absolute;
 	left: 0;
 	top: 0;
 	border-radius: 50%;
 	overflow: hidden;
 	padding: 22px;
+	width: 90px;
 	position: absolute;
 	top: 50%;
 	transform: translateY(-50%);
@@ -189,22 +188,22 @@ h1, h2, h3, h4{
 	}
 }
 .track__title{
-	color: $track-title;
-	font-size: 1.5em;
+	color: #fff;
+	font-size: 17px;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
-	.now-playing &{
-		color: $active-track-title;
-	}
-
 }
 
 .track__seek {
 	display: none;
-	height: 15px;
-	width: 90%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
 	overflow: hidden;
+	background: #1c1c1c;
 	.now-playing &{
 		display: block;
 	}
@@ -220,17 +219,8 @@ h1, h2, h3, h4{
 
 .track__username{
 	color: $user;
-	.now-playing &{
-		color: $active-track-user;
-	}
 }
 
-.playlist {
-
-	.close {
-		position: absolute;
-		top: 5px;
-		right: 15px;
-		font-size: 20px;
-	}
+.playlist ul {
+	padding: 0;
 }

@@ -9,28 +9,23 @@
 
 	<header class="masthead">
 		<div class="logo">monomono</div>
-		<div class="search-container">
-			<input type="text" class="search-bar"  id="url" placeholder="Search" autofocus />
-			<ul class="js-search-result search-result">
-				<!-- template -->
-			</ul>
-		</div>
-	</header>
-	<div class="container">
+
 		<div class="controls">
 			<span class="control-button js-reset" id="reset">Reset the shit</span>
-			<span class="control-button js-show-playlist" id="showPlaylist">What's playing?</span>
 			<span class="control-button js-iosplay" id="iosplay">iOS play</span>
 			<span class="control-button js-mute" id="mute">Mute</span>
+			<span class="control-button js-search" id="search">Søk</span>
 		</div>
-
-		<div class="js-now-playing now-playing">
+	</header>
+	<div class="search-container">
+		<span class="close">&times;</span>
+		<input type="text" class="search-bar"  id="url" placeholder="Search" autofocus />
+		<ul class="js-search-result search-result">
 			<!-- template -->
-		</div>
-
+		</ul>
+	</div>
+	<div class="container">
 		<div class="js-playlist playlist">
-			<span class="close">&times;</span>
-			<h4>Playlist</h4>
 			<ul>
 				<!-- template -->
 			</ul>

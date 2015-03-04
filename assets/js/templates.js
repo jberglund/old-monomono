@@ -8,5 +8,5 @@ this["Marmelad"]["templates"]["searchtrack"] = Handlebars.template({"compiler":[
     + escapeExpression(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"title","hash":{},"data":data}) : helper)))
     + "</h4>\n	    	<h4 class=\"track__username\">"
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.username : stack1), depth0))
-    + "</h4>\n            <div class=\"track__seek\">\n            	<span class=\"track__seek__indicator\"></span>\n            </div>\n    	</div>\n    </div>\n</div>\n";
+    + "</h4>\n    	</div>\n    </div>\n    <div class=\"track__seek\">\n        <span class=\"track__seek__indicator\"></span>\n    </div>\n</div>\n";
 },"useData":true});

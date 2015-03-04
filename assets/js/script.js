@@ -4,6 +4,8 @@ jQuery(document).ready(function($){
         redirect_uri: "http://localhost:4000/callback.html",
     });
 
+    var $document = $(document);
+
     var selector = {
         searchResult: $('.js-search-result'),
         nowPlaying: $('.js-now-playing'),
@@ -11,7 +13,10 @@ jQuery(document).ready(function($){
         showPlaylist: $('.js-show-playlist'),
         reset: $('.js-reset'),
         iosPlay: $('.js-iosplay'),
-        mute: $('.js-mute')
+        mute: $('.js-mute'),
+        search: $('.js-search'),
+        searchContainer: $('.search-container'),
+        closeSearch: $('.search-container .close')
     }
 
     var appUrl = location.hostname === 'localhost' ? 'http://127.0.0.1:5000' : 'https://monomono.herokuapp.com/',
@@ -26,10 +31,10 @@ jQuery(document).ready(function($){
 
     }
 
-    function addTracks(tracks, prependTo, callback){
+    function addTracks(tracks, prependTo, playingNum, callback){
         var trackListLength = tracks.length;
 
-        for (var i = 0; i < trackListLength; i++) {
+        for (var i = trackListLength; i--;) {
             if(!tracks[i].streamable) continue;
             var trackElement = document.createElement('li');
             // Skapar en container för att lättare ha event listeners redo
@@ -37,6 +42,12 @@ jQuery(document).ready(function($){
 
             var html = Marmelad.templates.searchtrack(tracks[i]);
             trackElement.innerHTML = html;
+            if (i == playingNum) {
+                trackElement.classList.add('now-playing');
+                trackElement.classList.add('js-now-playing');
+            } else if (i < playingNum) {
+                trackElement.classList.add('played');
+            }
 
             if (callback && typeof(callback) === "function") {
                 callback(tracks[i], trackElement);
@@ -46,26 +57,22 @@ jQuery(document).ready(function($){
         };
     }
 
-    function populatePlaylist(playlist) {
-        console.log('playlist: ', playlist);
-        addTracks(playlist, selector.playlist);
+    function populatePlaylist(playlist, currentTrack) {
+        console.log('playlist: ', playlist, currentTrack);
+        selector.playlist.empty();
+        addTracks(playlist, selector.playlist, currentTrack);
     }
 
     addInputCallback(listUrl, onKeyboardInput, 300);
 
     socket.on('playSong', function(track, skipTo) {
-       // console.log('playSong', track, skipTo);
         if (!track) return;
         SC.streamStopAll();
         selector.nowPlaying.empty();
-        //resolveUrl(track, skipTo);
-        addTracks([track], selector.nowPlaying);
-
         playTrack(track, skipTo);
     });
 
     function playTrack(track, skipTo){
-       // console.log('play track', track);
         SC.stream(track.stream_url, {
             useHTML5Audio: true,
             preferFlash: false,
@@ -81,7 +88,7 @@ jQuery(document).ready(function($){
             volume: selector.mute.hasClass('js-state--mute') ? 0 : 100,
             position: skipTo
         }, function(sound){
-           // console.log('sound', sound);
+            selector.nowPlaying = $('.js-now-playing');
             currentTrack = sound;
             if (sound)
                 sound.play();
@@ -91,11 +98,10 @@ jQuery(document).ready(function($){
 
     function searchSoundCloud(string){
         SC.get('/tracks', { q: string, limit: 5 }, function(tracks) {
-            addTracks(tracks, selector.searchResult, function(track, trackElement){
+            addTracks(tracks, selector.searchResult, -1, function(track, trackElement){
                 trackElement.addEventListener('click', function(){
                     socket.emit('newtrack', track);
                 });
-
             });
             bindSearchKeys($('.search-result .track'));
         });
@@ -116,8 +122,12 @@ jQuery(document).ready(function($){
         currentTrack.play();
     });
 
-    selector.showPlaylist.on('click', function() {
-        socket.emit('getPlaylist');
+    selector.search.on('click', function() {
+        selector.searchContainer.addClass('show');
+    });
+
+    selector.closeSearch.on('click', function() {
+        selector.searchContainer.removeClass('show');
     });
 
     selector.mute.on('click', function() {
@@ -127,12 +137,8 @@ jQuery(document).ready(function($){
         }
     });
 
-    socket.on('playlist', function(playlist) {
-        populatePlaylist(playlist);
-    });
-
-    socket.on('playlistUpdate', function(playlist) {
-        $('#showPlaylist').addClass('new');
+    socket.on('playlist', function(playlist, currentTrack) {
+        populatePlaylist(playlist, currentTrack);
     });
 
     socket.on('noMore', function() {

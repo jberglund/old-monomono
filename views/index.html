@@ -14,7 +14,10 @@
 			<span class="control-button js-reset" id="reset">Reset the shit</span>
 			<span class="control-button js-iosplay" id="iosplay">iOS play</span>
 			<span class="control-button js-mute" id="mute">Mute</span>
-			<span class="control-button js-search" id="search">
+		</div>
+		<div class="search-button">
+			Search for awesome music
+			<span class="js-search" id="search">
 				<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36" enable-background="new 0 0 36 36" xml:space="preserve">
 					<path d="M13.5,0C21,0,27,6,27,13.5c0,3.1-1.1,6-2.8,8.3l11.4,11.4c0.3,0.3,0.5,0.8,0.5,1.2c0,0.4-0.2,0.9-0.5,1.2
 						c-0.3,0.3-0.8,0.5-1.2,0.5s-0.9-0.2-1.2-0.5L21.8,24.2c-2.3,1.8-5.1,2.8-8.3,2.8C6,27,0,21,0,13.5S6,0,13.5,0z M13.5,23.6
@@ -27,13 +30,19 @@
 						<path d="M9.7,17c-0.2,0-0.4-0.1-0.5-0.2c-0.3-0.3-0.3-0.8,0-1.1l8.4-8.4c0.3-0.3,0.8-0.3,1.1,0c0.3,0.3,0.3,0.8,0,1.1l-8.4,8.4
 							C10.1,16.9,9.9,17,9.7,17z"/>
 					</g>
+					<g id="closeSearch">
+						<path d="M19.5,18.1c0,0.4-0.2,0.7-0.4,1c-0.3,0.3-0.6,0.4-1,0.4c-0.4,0-0.8-0.1-1.1-0.4
+							l-3.4-3.4l-3.4,3.4c-0.3,0.3-0.7,0.4-1.1,0.4c-0.4,0-0.7-0.2-1-0.4c-0.3-0.3-0.4-0.6-0.4-1c0-0.4,0.1-0.8,0.4-1.1l3.4-3.4L8,10.1
+							C7.7,9.8,7.5,9.4,7.5,9c0-0.4,0.2-0.7,0.4-1c0.3-0.3,0.6-0.4,1-0.4c0.4,0,0.8,0.1,1.1,0.4l3.4,3.4L17,8c0.3-0.3,0.7-0.4,1.1-0.4
+							c0.4,0,0.7,0.2,1,0.4c0.3,0.3,0.4,0.6,0.4,1c0,0.4-0.1,0.8-0.4,1.1l-3.4,3.4l3.4,3.4C19.4,17.3,19.5,17.7,19.5,18.1z"/>
+					</g>
 				</svg>
 			</span>
 		</div>
 	</header>
 	<div class="search-container">
-		<span class="close">&times;</span>
-		<input type="text" class="search-bar"  id="url" placeholder="Search" autofocus />
+		<input type="text" class="search-bar" id="url">
+		<span class="js-search fake-button"></span>
 		<ul class="js-search-result search-result">
 			<!-- template -->
 		</ul>

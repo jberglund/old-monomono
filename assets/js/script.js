@@ -83,12 +83,11 @@ jQuery(document).ready(function($){
                 console.log('the song is finished YO. Change the tune!', this);
             },
             whileplaying: function() {
-                selector.nowPlaying.find('.track__seek__indicator').css('transform', 'translateX(' + ((Math.round((this.position/this.duration)*10000)/100)-100) + '%)');
+                $('.js-now-playing').find('.track__seek__indicator').css('transform', 'translateX(' + ((Math.round((this.position/this.duration)*10000)/100)-100) + '%)');
             },
             volume: selector.mute.hasClass('js-state--mute') ? 0 : 100,
             position: skipTo
         }, function(sound){
-            selector.nowPlaying = $('.js-now-playing');
             currentTrack = sound;
             if (sound)
                 sound.play();
@@ -100,6 +99,7 @@ jQuery(document).ready(function($){
         SC.get('/tracks', { q: string, limit: 10 }, function(tracks) {
             addTracks(tracks, selector.searchResult, -1, function(track, trackElement){
                 trackElement.addEventListener('click', function(){
+                    if (trackElement.classList.contains('added')) return;
                     trackElement.classList.add('added');
                     socket.emit('newtrack', track);
                 });
@@ -125,10 +125,14 @@ jQuery(document).ready(function($){
 
     selector.search.on('click', function() {
         selector.searchContainer.addClass('show');
-    });
+        if (document.body.classList.contains('openSearch')) {
+            document.body.classList.remove('openSearch');
+            selector.searchResult.empty();
+        } else {
+            document.body.classList.add('openSearch');
+            $('#url').focus();
+        }
 
-    selector.closeSearch.on('click', function() {
-        selector.searchContainer.removeClass('show');
     });
 
     selector.mute.on('click', function() {

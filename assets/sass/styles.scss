@@ -50,14 +50,29 @@ h1, h2, h3, h4{
 .control-button{
 	padding: 0.5em 0.8em;
 	border-radius: 2px;
+	display: none;
 	margin-right: 0.5em;
+}
+.search-button {
+	float: right;
+	margin-right: 20px;
+	margin-top: 38px;
+	font-size: 24px;
+	> * { vertical-align: middle; }
 
+	.js-search {
+		display: inline-block;
+		margin-left: 20px;
+		cursor: pointer;
+	}
 	svg {
-		width: 50px;
+		width: 36px;
 
-		#lines { transition: transform .3s ease; }
-		&:hover #lines {
-			transform: translate(-50px, 50px);
+		g { transition: transform .3s ease; }
+		#closeSearch { transform: translate(-50px, 50px); }
+		.openSearch & {
+			#lines { transform: translate(-50px, 50px); }
+			#closeSearch { transform: translate(0px, 0px); }
 		}
 	}
 }
@@ -71,37 +86,37 @@ h1, h2, h3, h4{
 	float: left;
 }
 .search-container{
-	background-color: $secondary-bg-color;
-	padding: 1em 2em;
+	padding: 1.6em 0;
 	top: 0px;
 	z-index: 200;
 	width: 100%;
-	left: 100%;
+	left: 0;
 	position: absolute;
-	transition: left .4s ease;
+	opacity: 0;
+	transition: opacity .2s ease;
 
-	.close {
+	.js-search {
 		position: absolute;
-		top: 5px;
-		right: 15px;
+		right: 20px;
+		top: 30px;
+		height: 37px;
+		width: 37px;
 		cursor: pointer;
-		font-size: 20px;
 	}
-
-	&.show {
-		left: 0;
+	.openSearch & { opacity: 1; }
+	ul {
+		background-color: $secondary-bg-color;
+		border-top: 3px solid black;
 	}
 }
 .search-bar{
 	background-color: $secondary-bg-color;
-	width: 100%;
-	text-align: right;
+	width: 90%;
 	padding: 0.5em;
 	border: 0;
 	color: black;
 	font-size: 25px;
 	transition: 300ms all ease;
-	border-bottom: 3px solid black;
 	&:focus{
 		outline: none;
 		//background-color: darken($secondary-bg-color, 10%);
@@ -119,7 +134,6 @@ h1, h2, h3, h4{
 	width: 100%;
 	font-size: 14px;
 	position: relative;
-	cursor: pointer;
 	&.selected{
 		background-color: darken($light-yellow, 20%);
 	}
@@ -129,8 +143,8 @@ h1, h2, h3, h4{
 	.now-playing &{
 		background-color: $active-track-bg;
 	}
-	.search-container &{
-		height: 100px;
+	.search-container & {
+		cursor: pointer;
 	}
 
 	&.played { opacity: .25; }
@@ -143,7 +157,7 @@ h1, h2, h3, h4{
 		width: 52px;
 		height: 52px;
 		left: 4px;
-		top: 24px;
+		top: 10px;
 		z-index: 2;
 		border-radius: 50%;
 		position: absolute;
@@ -151,8 +165,9 @@ h1, h2, h3, h4{
 		opacity: 0;
 		svg { width: 16px; }
 	}
-	&.added .addedIcon {
-		opacity: 1;
+	&.added {
+		cursor: default;
+		.addedIcon { opacity: 1; }
 	}
 	&.added .va { opacity: .25; }
 }

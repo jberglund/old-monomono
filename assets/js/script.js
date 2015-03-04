@@ -97,9 +97,10 @@ jQuery(document).ready(function($){
 
 
     function searchSoundCloud(string){
-        SC.get('/tracks', { q: string, limit: 5 }, function(tracks) {
+        SC.get('/tracks', { q: string, limit: 10 }, function(tracks) {
             addTracks(tracks, selector.searchResult, -1, function(track, trackElement){
                 trackElement.addEventListener('click', function(){
+                    trackElement.classList.add('added');
                     socket.emit('newtrack', track);
                 });
             });

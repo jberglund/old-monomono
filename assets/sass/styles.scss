@@ -13,7 +13,7 @@ $menu:	 				$light-yellow;
 $active-track-bg: 		$purple;
 $secondary-bg-color:	$light-yellow;
 
-*{
+*, *:after,*:before{
 	box-sizing: border-box;
 }
 body, html{
@@ -48,10 +48,18 @@ h1, h2, h3, h4{
 	right: 1em;
 }
 .control-button{
-	background-color: #fff;
 	padding: 0.5em 0.8em;
 	border-radius: 2px;
 	margin-right: 0.5em;
+
+	svg {
+		width: 50px;
+
+		#lines { transition: transform .3s ease; }
+		&:hover #lines {
+			transform: translate(-50px, 50px);
+		}
+	}
 }
 
 .logo{
@@ -65,7 +73,7 @@ h1, h2, h3, h4{
 .search-container{
 	background-color: $secondary-bg-color;
 	padding: 1em 2em;
-	top: 120px;
+	top: 0px;
 	z-index: 200;
 	width: 100%;
 	left: 100%;
@@ -114,17 +122,6 @@ h1, h2, h3, h4{
 	&.selected{
 		background-color: darken($light-yellow, 20%);
 	}
-	&:after{
-		//display: block;
-		display: none;
-		content: "";
-		position: absolute;
-		right: 0;
-		top: 0;
-		height: 100%;
-		width: 3em;
-		background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%); /* W3C */
-	}
 	.now-playing &:after{
 		display: none;
 	}
@@ -136,6 +133,27 @@ h1, h2, h3, h4{
 	}
 
 	&.played { opacity: .25; }
+
+	.addedIcon {
+		text-align: center;
+		padding-top: 10px;
+		font-size: 20px;
+		background: #fff;
+		width: 52px;
+		height: 52px;
+		left: 4px;
+		top: 24px;
+		z-index: 2;
+		border-radius: 50%;
+		position: absolute;
+		transition: opacity .2s ease;
+		opacity: 0;
+		svg { width: 16px; }
+	}
+	&.added .addedIcon {
+		opacity: 1;
+	}
+	&.added .va { opacity: .25; }
 }
 
 .search-container .track{
@@ -161,6 +179,7 @@ h1, h2, h3, h4{
 	.va {
 		vertical-align: middle;
 		display: inline-block;
+		transition: opacity .2s ease;
 		width: 99%;
 	}
 	.search-container &{
@@ -193,6 +212,8 @@ h1, h2, h3, h4{
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
+
+	.search-container & { color: $dark-gray; }
 }
 
 .track__seek {

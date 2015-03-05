@@ -77,6 +77,12 @@ h1, h2, h3, h4{
 	}
 }
 
+.js-mute {
+	position: absolute;
+	left: 50%;
+	z-index: 300;
+}
+
 .logo{
 	font-size: 2em;
 	line-height: 105px;

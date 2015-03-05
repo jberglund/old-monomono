@@ -17,7 +17,7 @@ jQuery(document).ready(function($){
         search: $('.js-search'),
         searchContainer: $('.search-container'),
         closeSearch: $('.search-container .close')
-    }
+    };
 
     var appUrl = location.hostname === 'localhost' ? 'http://127.0.0.1:5000' : 'https://monomono.herokuapp.com/',
         socket = io.connect(appUrl, { resource: 'assets/js/vendor/socket.js' }),
@@ -54,7 +54,7 @@ jQuery(document).ready(function($){
             }
 
             prependTo.prepend(trackElement);
-        };
+        }
     }
 
     function populatePlaylist(playlist, currentTrack) {

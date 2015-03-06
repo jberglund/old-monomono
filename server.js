@@ -44,6 +44,9 @@ io.on('connection', function(socket) {
             if (playlist[i].id == id) {
                 playlist.splice(i, 1);
                 if (i < currentTrack) currentTrack--;
+                else if (i === currentTrack) {
+                    playNextSong();
+                }
                 io.sockets.emit('playlist', playlist, currentTrack);
             }
         }

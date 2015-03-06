@@ -16,7 +16,8 @@ jQuery(document).ready(function($){
         mute: $('.js-mute'),
         search: $('.js-search'),
         searchContainer: $('.search-container'),
-        closeSearch: $('.search-container .close')
+        closeSearch: $('.search-container .close'),
+        deleteSong: $('.playlist .js-delete')
     };
 
     var appUrl = location.hostname === 'localhost' ? 'http://127.0.0.1:5000' : 'https://monomono.herokuapp.com/',
@@ -39,6 +40,12 @@ jQuery(document).ready(function($){
             var trackElement = document.createElement('li');
             // Skapar en container för att lättare ha event listeners redo
             trackElement.setAttribute('class', 'track');
+            var dur = tracks[i].duration;
+            dur = dur/1000;
+            var min = Math.floor(dur/60);
+            var sec = Math.round(dur%60);
+            if (sec < 10) sec = '0' + sec;
+            tracks[i].prettyDuration = min + ':' + sec;
 
             var html = Marmelad.templates.searchtrack(tracks[i]);
             trackElement.innerHTML = html;
@@ -102,7 +109,6 @@ jQuery(document).ready(function($){
                     if (trackElement.classList.contains('added')) return;
                     trackElement.classList.add('added');
                     socket.emit('newtrack', track);
-                    $('.js-search-result').empty();
                 });
             });
             bindSearchKeys($('.search-result .track'));
@@ -143,11 +149,21 @@ jQuery(document).ready(function($){
         }
     });
 
+    $document.on('click', '.playlist .js-delete', function() {
+        if (confirm('Sure you want to do that? Might be kind of an asshole move...')) {
+            socket.emit('delete', $(this).closest('.track__info').data('id'));
+        }
+    });
+
     socket.on('playlist', function(playlist, currentTrack) {
         populatePlaylist(playlist, currentTrack);
     });
 
     socket.on('noMore', function() {
         alert('No more tracks. Add some more, plz!');
+    });
+
+    socket.on('inqueue', function() {
+        alert("That song is already in the queue. Don't be a dick!");
     });
 });

@@ -10,7 +10,8 @@ app.use(express.static(__dirname + "/dist"));
 
 var playlist = [],
     start,
-    currentTrack = 0;
+    currentTrack = 0,
+    songTimeout;
 
 io.on('connection', function(socket) {
     console.log('connected to io');
@@ -20,6 +21,12 @@ io.on('connection', function(socket) {
         socket.emit('playlist', playlist, currentTrack);
     }
 	socket.on('newtrack', function(track) {
+        for (var i = 0; i < playlist.length; i++) {
+            if (playlist[i].id == track.id) {
+                socket.emit('inqueue');
+                return;
+            }
+        }
 		playlist.push(track);
         console.log('added track', playlist);
         if (playlist.length === 1) playNextSong();
@@ -28,7 +35,18 @@ io.on('connection', function(socket) {
 
     socket.on('reset', function() {
         playlist = [];
+        clearTimeout(songTimeout);
         console.log('Resetted');
+    });
+
+    socket.on('delete', function(id) {
+        for (var i = 0; i < playlist.length; i++) {
+            if (playlist[i].id == id) {
+                playlist.splice(i, 1);
+                if (i < currentTrack) currentTrack--;
+                io.sockets.emit('playlist', playlist, currentTrack);
+            }
+        }
     });
 });
 
@@ -43,5 +61,5 @@ function playNextSong() {
     io.sockets.emit('playSong', playlist[currentTrack], 0);
     io.sockets.emit('playlist', playlist, currentTrack);
     start = (new Date()).getTime();
-    setTimeout(playNextSong, playlist[currentTrack].duration + 10);
+    songTimeout = setTimeout(playNextSong, playlist[currentTrack].duration + 10);
 }

@@ -63,6 +63,7 @@ function bindSearchKeys(items){
                 currentlySelectedItem.trigger('click');
                 currentlySelectedItem.removeClass('selected');
                 currentlySelectedItem = null;
+                break;
             default: return; // exit this handler for other keys
         }
         e.preventDefault(); // prevent the default action (scroll / move caret)

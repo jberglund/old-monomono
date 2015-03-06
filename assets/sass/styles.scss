@@ -140,6 +140,7 @@ h1, h2, h3, h4{
 	height: 72px;
 	width: 100%;
 	font-size: 14px;
+	color: #fff;
 	position: relative;
 	&.selected{
 		background-color: darken($light-yellow, 20%);
@@ -149,8 +150,18 @@ h1, h2, h3, h4{
 	}
 	.now-playing &{
 		background-color: $active-track-bg;
+		.js-delete { display: none; }
 	}
 	.search-container & {
+		cursor: pointer;
+		.js-delete { display: none; }
+	}
+
+	.js-delete {
+		position: absolute;
+		top: 50%;
+		right: 20px;
+		transform: translateY(-50%);
 		cursor: pointer;
 	}
 
@@ -181,6 +192,7 @@ h1, h2, h3, h4{
 
 .search-container .track{
 	font-size: 12px;
+	color: #000;
 }
 
 .track__info{

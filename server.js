@@ -22,7 +22,7 @@ io.on('connection', function(socket) {
 	socket.on('newtrack', function(track) {
 		playlist.push(track);
         console.log('added track', playlist);
-        if (playlist.length === 1) playNextSong(true);
+        if (playlist.length === 1) playNextSong();
         io.sockets.emit('playlist', playlist, currentTrack);
 	});
 
@@ -35,7 +35,7 @@ io.on('connection', function(socket) {
 server.listen(port);
 
 function playNextSong() {
-    currentTrack++
+    currentTrack++;
     if (currentTrack == playlist.length) {
         currentTrack = 0;
     }

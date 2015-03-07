@@ -22,9 +22,6 @@ function bindSearchKeys(items){
     $(document).keydown(function(e) {
 
         switch(e.which) {
-            case 37: // left
-            break;
-
             case 38: // up
             console.log('up');
                 if(currentlySelectedItem){
@@ -39,9 +36,6 @@ function bindSearchKeys(items){
                 }else{
                     currentlySelectedItem = allItems.last().addClass('selected');
                 }
-            break;
-
-            case 39: // right
             break;
 
             case 40: // down

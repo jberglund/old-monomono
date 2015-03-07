@@ -20,18 +20,18 @@ io.on('connection', function(socket) {
         socket.emit('playSong', playlist[currentTrack], (new Date()).getTime() - start);
         socket.emit('playlist', playlist, currentTrack);
     }
-	socket.on('newtrack', function(track) {
+    socket.on('newtrack', function(track) {
         for (var i = 0; i < playlist.length; i++) {
             if (playlist[i].id == track.id) {
                 socket.emit('inqueue');
                 return;
             }
         }
-		playlist.push(track);
+        playlist.push(track);
         console.log('added track', playlist);
         if (playlist.length === 1) playNextSong();
         io.sockets.emit('playlist', playlist, currentTrack);
-	});
+    });
 
     socket.on('reset', function() {
         playlist = [];

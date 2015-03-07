@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title></title>
+	<title>Monomono</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="assets/css/styles.css">
+	<script src="//use.typekit.net/qps7jzk.js"></script>
+	<script>try{Typekit.load();}catch(e){}</script>
+
 </head>
 <body>
 
@@ -14,9 +17,8 @@
 			<span class="control-button js-reset" id="reset">Reset the shit</span>
 			<span class="control-button js-iosplay" id="iosplay">iOS play</span>
 		</div>
-		<div class="search-button">
-			Search for awesome music
-			<span class="js-search" id="search">
+		<div class="search-button-container">
+			<span class="js-search search-button" id="search">
 				<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36" enable-background="new 0 0 36 36" xml:space="preserve">
 					<path d="M13.5,0C21,0,27,6,27,13.5c0,3.1-1.1,6-2.8,8.3l11.4,11.4c0.3,0.3,0.5,0.8,0.5,1.2c0,0.4-0.2,0.9-0.5,1.2
 						c-0.3,0.3-0.8,0.5-1.2,0.5s-0.9-0.2-1.2-0.5L21.8,24.2c-2.3,1.8-5.1,2.8-8.3,2.8C6,27,0,21,0,13.5S6,0,13.5,0z M13.5,23.6
@@ -39,10 +41,10 @@
 			</span>
 		</div>
 	</header>
-	<span class="js-mute" id="mute">Mute</span>
+	<span class="js-mute mute" id="mute">Mute</span>
 	<div class="search-container">
-		<input type="text" class="search-bar" id="url">
-		<span class="js-search fake-button"></span>
+		<input type="text" class="search-bar js-search-input">
+		<span class="js-search fake-button search-button"></span>
 		<ul class="js-search-result search-result">
 			<!-- template -->
 		</ul>
@@ -63,8 +65,6 @@
 	<script src="assets/js/script.js"></script>
 
 
-	<script src="//use.typekit.net/qps7jzk.js"></script>
-	<script>try{Typekit.load();}catch(e){}</script>
 
 </body>
 </html>

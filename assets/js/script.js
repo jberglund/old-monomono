@@ -16,13 +16,14 @@ Monomono =  (function($){
     function MM(){
 
         // Global variables
-        this.currentItemIndex = 0;
-        this.searchResultArrayLength = 0;
-        this.currentTrack;
+        this.currentItemIndex;
+        this.searchResultArrayLength;
+        this.currentPlayingTrack;
+        this.currentPlayingElement;
 
         this.selectors = {
             searchResult: $('.js-search-result'),
-            nowPlaying: $('.js-now-playing'),
+            seekBar: $('.track__seek__indicator'),
             playlist: $('.js-playlist ul'),
             showPlaylist: $('.js-show-playlist'),
             reset: $('.js-reset'),
@@ -30,7 +31,8 @@ Monomono =  (function($){
             searchContainer: $('.search-container'),
             iosPlay: $('.js-iosplay'),
             mute: $('.js-mute'),
-            searchInput: $('.js-search-input')
+            searchInput: $('.js-search-input'),
+            deleteSong: $('.js-delete')
         }
 
         this.settings = {
@@ -50,19 +52,24 @@ Monomono =  (function($){
 
     MMP.addTracks = function(tracks, prependTo, playingNum, callback){
         var trackListLength = tracks.length;
+
         for (var i = trackListLength; i--;) {
             if(!tracks[i].streamable) continue;
-            var trackElement = document.createElement('li');
+
             // Skapar en container för att lättare ha event listeners redo
-            trackElement.setAttribute('class', 'track');
+            var trackElement = document.createElement('li');
+                trackElement.setAttribute('class', 'track');
+
+            tracks[i].prettyDuration = formatDuration(tracks[i].duration);
 
             var html = Marmelad.templates.searchtrack(tracks[i]);
             trackElement.innerHTML = html;
+
             if (i == playingNum) {
-                trackElement.classList.add('now-playing');
-                trackElement.classList.add('js-now-playing');
+                this.currentPlayingElement = $(trackElement);
+                trackElement.classList.add('track--now-playing');
             } else if (i < playingNum) {
-                trackElement.classList.add('played');
+                trackElement.classList.add('track--played');
             }
 
             if (callback && typeof(callback) === "function") {
@@ -73,34 +80,38 @@ Monomono =  (function($){
         }
     };
 
-    MMP.populatePlaylist = function(playlist){
-        console.log('playlist: ', playlist, this.currentTrack);
+    MMP.populatePlaylist = function(playlist, currentTrackNumber){
         this.selectors.playlist.empty();
-        this.addTracks(playlist, this.selectors.playlist, this.currentTrack);
+        this.addTracks(playlist, this.selectors.playlist, currentTrackNumber);
     };
 
     MMP.searchTracks = function(string){
         var _this = this;
         SC.get('/tracks', { q: string, limit: 10 }, function(tracks) {
-             _this.addTracks(tracks, _this.selectors.searchResult, -1, function(track, trackElement){
+            _this.selectors.searchResult.empty();
+            _this.addTracks(tracks, _this.selectors.searchResult, -1, function(track, trackElement){
                 trackElement.addEventListener('click', function(){
                     if (trackElement.classList.contains('added')) return;
                     trackElement.classList.add('added');
                     _this.socket.emit('newtrack', track);
-
                 });
             });
-            _this.searchResultArrayLength = tracks.length;
 
+            _this.searchResultArrayLength = tracks.length;
+            _this.currentItemIndex = -1;
          });
     };
 
     MMP.seekbarPosition = function(track){
-        var _this = track;
-        this.selector.nowPlaying.find('.track__seek__indicator').css('transform', 'translateX(' + ((Math.round((_this.position/_this.duration)*10000)/100)-100) + '%)');
+        // Overkill med find här eftersom den gör uppslag mot DOM
+        // hela tiden. Överväg att finna ett annat sätt att referera till
+        // den utanför denna funktionen.
+        this.currentPlayingElement.find('.track__seek__indicator').css('transform', 'translateX(' + ((Math.round((track.position/track.duration)*10000)/100)-100) + '%)');
     };
 
     MMP.playTrack = function(track, skipTo){
+        var _this = this;
+
          SC.stream(track.stream_url, {
              useHTML5Audio: true,
              preferFlash: false,
@@ -110,93 +121,117 @@ Monomono =  (function($){
                  //om at noen er ferdig allerede?
                  console.log('the song is finished YO. Change the tune!', this);
              },
-             whileplaying: this.seekbarPosition(this),
-             volume: selector.mute.hasClass('js-state--mute') ? 0 : 100,
+             whileplaying: function(){
+                _this.seekbarPosition(this, _this);
+             },
+             volume: _this.selectors.mute.hasClass('js-state--mute') ? 0 : 100,
              position: skipTo
          }, function(sound){
-             currentTrack = sound;
+            _this.currentPlayingTrack = sound;
              if (sound) sound.play();
          });
     }
 
-
+    // Keyboard controls
     MMP.goTo = function(index){
-        //index = Number(index - 1);
-        console.log(index);
         if(index >= this.searchResultArrayLength || index < 0 || index === this.currentItemIndex) { return; }
+        this.selectors.searchResult.find('.track').removeClass('track--highlight');
+        this.selectors.searchResult.find('.track').eq(index).addClass('track--highlight');
         this.currentItemIndex = index;
-        $('.track').removeClass('track--highlight');
-        $('.track').eq(index).addClass('track--highlight');
-    }
-    MMP.onPrevResult = function () {
-        this.goTo((this.currentItemIndex) - 1);
     };
 
-    MMP.onNextResult = function () {
-        if(this.currentItemIndex + 1 === this.searchResultArrayLength) {
-            this.goTo(0);
+    MMP.onPrevResult = function () {
+        if(this.currentItemIndex === 0){
+            this.goTo(this.searchResultArrayLength -1 );
         } else {
-          this.goTo((this.currentItemIndex) + 1);
+            this.goTo((this.currentItemIndex) - 1);
         }
     };
 
+    MMP.onNextResult = function () {
+        if(this.currentItemIndex == this.searchResultArrayLength - 1) {
+            this.goTo(0);
+        } else {
+            this.goTo((this.currentItemIndex) + 1);
+        }
+    };
+
+    MMP.selectResult = function () {
+        this.selectors.searchResult.find('.track').eq(this.currentItemIndex).trigger('click');
+    };
+
+    MMP.clearResults = function (){
+        this.selectors.searchResult.empty();
+        this.selectors.searchInput.val('');
+        this.currentItemIndex = -1;
+    };
+    // End Keyboard control
+
     MMP.bindEvents = function(){
-        // Referera till this så vi kan nå den innanför ELs.
         var _this = this;
         var timer = null;
 
         this.selectors.searchInput.on('keypress', function() {
-            var inputValue = $(this).val();
-            _this.selectors.searchResult.empty();
-
+            var thisElement = $(this);
+            _this.currentItemIndex = -1;
             if (timer) {
                 window.clearTimeout(timer);
             }
 
             timer = window.setTimeout( function() {
                 timer = null;
-                _this.searchTracks(inputValue);
+                _this.searchTracks(thisElement.val());
             }, 400 );
         });
 
         dj.keydown(function(e){
-            switch(e.which){
-                case 38: //up
+            switch(e.keyCode){
+                case 38: // Arrow up
+                    e.preventDefault();
                     _this.onPrevResult();
-                case 40: //down
+                    break;
+                case 40: // Arrow down
+                    e.preventDefault();
                     _this.onNextResult();
+                    break;
+                case 13: // Return key
+                    e.preventDefault();
+                    _this.selectResult();
+                    break;
+                case 27: // Esc
+                    e.preventDefault();
+                    _this.clearResults();
                 default: return;
             }
         });
 
-
-        this.selectors.reset.on('click', function() {
-            this.socket.emit('reset');
-        });
-
         this.selectors.iosPlay.on('click', function() {
-            currentTrack.play();
+            //currentTrack.play();
         });
 
-        this.selectors.showPlaylist.on('click', function() {
-            this.socket.emit('getPlaylist');
+        dj.on('click', '.js-delete', function(){
+            if (confirm('Sure you want to do that? Might be kind of an asshole move...')) {
+                _this.socket.emit('delete', $(this).closest('.track__info').data('id'));
+            }
         });
 
         this.selectors.mute.on('click', function() {
-            if (currentTrack) {
-                currentTrack.setVolume(selector.mute.hasClass('js-state--mute') ? 100 : 0);
+            if (_this.currentPlayingTrack) {
+                _this.currentPlayingTrack.setVolume(_this.selectors.mute.hasClass('js-state--mute') ? 100 : 0);
                 _this.selectors.mute.toggleClass('js-state--mute');
             }
         });
 
         this.selectors.search.on('click', function() {
-            _this.selectors.searchContainer.addClass('show');
-            if (db.classList.contains('openSearch')) {
-                db.classList.remove('openSearch');
+            _this.selectors.searchContainer.addClass('search--show');
+            if (db.classList.contains('search--open')) {
+                db.classList.remove('search--open');
                 _this.selectors.searchResult.empty();
+
             } else {
-                document.body.classList.add('openSearch');
-                $('#url').focus();
+                document.body.classList.add('search--open');
+                _this.selectors.searchInput.focus();
+
             }
         });
     };
@@ -204,14 +239,34 @@ Monomono =  (function($){
     MMP.bindSockets = function(){
         var _this = this;
 
-        this.socket.on('playlist', function(playlist, currentTrack) {
-            _this.populatePlaylist(playlist, currentTrack);
+        this.socket.on('playlist', function(playlist, currentTrackNumber) {
+            _this.populatePlaylist(playlist, currentTrackNumber);
         });
 
         this.socket.on('noMore', function() {
             alert('No more tracks. Add some more, plz!');
         });
+
+        this.socket.on('playSong', function(track, skipTo) {
+            if (!track) return;
+            SC.streamStopAll();
+            _this.playTrack(track, skipTo);
+        });
+
+        this.socket.on('inqueue', function() {
+            alert("That song is already in the queue. Don't be a dick!");
+        });
     };
+
+
+    // Helpers!
+    function formatDuration(duration){
+        duration = duration/1000;
+        var min = Math.floor(duration/60);
+        var sec = Math.round(duration%60);
+        if (sec < 10) sec = '0' + sec;
+        return min + ':' + sec;
+    }
 
     return MM;
 

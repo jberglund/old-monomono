@@ -1,3 +1,27 @@
+/*
+	Child of: Double lower dash
+		## Example: parent--unique-child
+
+	States: Double dashed element name
+		## Example: element--state-name
+
+	Preventing namespace leaking and odd-ball selectors.
+
+	element{
+		&__unique-child{
+
+		}
+		&--state-name{
+
+		}
+	}
+
+	produces clean and readable CSS when compiled:
+	.element__unique-child{ }
+	.element--state-name{ }
+
+*/
+
 $purple: 				#8273ed;
 $white: 				#fff;
 $light-yellow:			#feffba;
@@ -53,14 +77,14 @@ h1, h2, h3, h4{
 	display: none;
 	margin-right: 0.5em;
 }
-.search-button {
+.search-button-container {
 	float: right;
 	margin-right: 20px;
 	margin-top: 38px;
 	font-size: 24px;
 	> * { vertical-align: middle; }
 
-	.js-search {
+	.search-button {
 		display: inline-block;
 		margin-left: 20px;
 		cursor: pointer;
@@ -70,14 +94,14 @@ h1, h2, h3, h4{
 
 		g { transition: transform .3s ease; }
 		#closeSearch { transform: translate(-50px, 50px); }
-		.openSearch & {
+		.search--open & {
 			#lines { transform: translate(-50px, 50px); }
 			#closeSearch { transform: translate(0px, 0px); }
 		}
 	}
 }
 
-.js-mute {
+.mute {
 	position: absolute;
 	left: 50%;
 	z-index: 300;
@@ -101,20 +125,23 @@ h1, h2, h3, h4{
 	opacity: 0;
 	transition: opacity .2s ease;
 
-	.js-search {
-		position: absolute;
-		right: 20px;
-		top: 30px;
-		height: 37px;
-		width: 37px;
-		cursor: pointer;
-	}
-	.openSearch & { opacity: 1; }
+	.search--open & { opacity: 1; }
 	ul {
 		background-color: $secondary-bg-color;
 		border-top: 1px solid rgba(0,0,0,.1);
 	}
 }
+
+
+.search-button,  {
+	position: absolute;
+	right: 20px;
+	top: 30px;
+	height: 37px;
+	width: 37px;
+	cursor: pointer;
+}
+
 .search-bar{
 	background-color: $secondary-bg-color;
 	width: calc(100% - 60px);
@@ -134,124 +161,124 @@ h1, h2, h3, h4{
 	.track__played { display: none; }
 }
 
+// NAMESPACE THIS MOTHER!
 .track{
 	list-style: none;
 	clear: both;
 	height: 72px;
 	width: 100%;
 	font-size: 14px;
+	color: #fff;
 	position: relative;
-	&.track--highlight{
-		background-color: darken($light-yellow, 20%);
+
+	&--highlight{
+		background-color: #454545;
 	}
-	.now-playing &:after{
-		display: none;
-	}
-	.now-playing &{
+
+	&--now-playing {
 		background-color: $active-track-bg;
 	}
-	.search-container & {
+
+	&__delete {
+		position: absolute;
+		top: 50%;
+		right: 20px;
+		transform: translateY(-50%);
 		cursor: pointer;
+		.now-playing &, .search-result &{
+			display: none;
+		}
 	}
 
-	&.played { opacity: .25; }
-
-	.addedIcon {
+	&__added-icon {
 		text-align: center;
-		padding-top: 10px;
-		font-size: 20px;
 		background: #fff;
-		width: 52px;
-		height: 52px;
-		left: 4px;
-		top: 10px;
+		width: 100%;
+		height: 100%;
+		top: 0;
+		left: 0;
 		z-index: 2;
-		border-radius: 50%;
 		position: absolute;
 		transition: opacity .2s ease;
 		opacity: 0;
-		svg { width: 16px; }
+		.added &{ opacity: 1; }
+		svg {
+			width: 16px;
+			position: relative;
+			top: 50%;
+			transform: translateY(-50%);
+		}
 	}
-	&.added {
-		cursor: default;
-		.addedIcon { opacity: 1; }
+	&__assets {
+		display: block;
+		z-index: 2;
+		position: absolute;
+		left: 0;
+		top: 0;
+		border-radius: 50%;
+		overflow: hidden;
+		width: 46px;
+		height: 46px;
+		position: absolute;
+		top: 50%;
+		transform: translateY(-50%);
 	}
-	&.added .va { opacity: .25; }
+	&__img{
+		width: 100%;
+		border-radius: 50%;
+		overflow: hidden;
+	}
+
+	&__seek {
+		display: none;
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		overflow: hidden;
+		background: #1c1c1c;
+		.track--now-playing &{
+			display: block;
+		}
+	}
+	&__title{
+		color: #fff;
+		font-size: 17px;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		.search-container & { color: $dark-gray; }
+	}
+
+	&--played { opacity: .25; }
 }
+
+&.added .track__info { opacity: .25; }
 
 .search-container .track{
 	font-size: 12px;
+	color: #000;
 }
 
 .track__info{
 	position: absolute;
-	width: calc(100% - 88px);
-	top: 0;
+	width: calc(100% - 90px);
+	top: 50%;
+	transform: translateY(-50%);
 	z-index: 2;
 	right: 0;
 	height: 100%;
 	display: block;
-	&:before {
-		content: "";
-		display: inline-block;
-		width: 0;
-		height: 100%;
-		vertical-align: middle;
-	}
 
-	.va {
-		vertical-align: middle;
-		display: inline-block;
-		transition: opacity .2s ease;
-		width: 99%;
-	}
 	.search-container &{
-		width: calc(100% - 68px);
+		width: calc(100% - 90px);
 	}
 }
 
-.track__img {
-	display: block;
-	z-index: 2;
-	position: absolute;
-	left: 0;
-	top: 0;
-	border-radius: 50%;
-	overflow: hidden;
-	padding: 22px;
-	width: 90px;
-	position: absolute;
-	top: 50%;
-	transform: translateY(-50%);
-	.search-container &{
-		width: 60px;
-		height: 60px;
-		padding: 5px;
-	}
-}
-.track__title{
-	color: #fff;
-	font-size: 17px;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
 
-	.search-container & { color: $dark-gray; }
-}
 
-.track__seek {
-	display: none;
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	overflow: hidden;
-	background: #1c1c1c;
-	.now-playing &{
-		display: block;
-	}
-}
+
 
 .track__seek__indicator{
 	display: block;

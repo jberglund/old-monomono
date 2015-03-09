@@ -11,12 +11,10 @@
     </span>
     </div>
     <div class="track__info" data-id="{{id}}">
-
-            <h4 class="track__title">{{title}}</h4>
-            <div class="track__username">{{user.username}}</div>
-            <div class="track__duration">{{prettyDuration}}</div>
-            <div class="track__delete js-delete">Del</div>
-
+        <h4 class="track__title">{{title}} <small>({{addedBy.name}})</small></h4>
+        <div class="track__username">{{user.username}}</div>
+        <div class="track__duration">{{prettyDuration}}</div>
+        <div class="track__delete js-delete">Del</div>
     </div>
     <div class="track__seek">
         <span class="track__seek__indicator"></span>

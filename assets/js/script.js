@@ -1,7 +1,6 @@
-
 var Monomono = Monomono || {};
 
-Monomono =  (function($){
+Monomono = (function($){
 
     // Good references
     var d   = document,
@@ -20,6 +19,7 @@ Monomono =  (function($){
         this.searchResultArrayLength;
         this.currentPlayingTrack;
         this.currentPlayingElement;
+        this.facebookUser;
 
         this.selectors = {
             searchResult: $('.js-search-result'),
@@ -32,7 +32,8 @@ Monomono =  (function($){
             iosPlay: $('.js-iosplay'),
             mute: $('.js-mute'),
             searchInput: $('.js-search-input'),
-            deleteSong: $('.js-delete')
+            deleteSong: $('.js-delete'),
+            login: $('.js-login')
         }
 
         this.settings = {
@@ -50,7 +51,32 @@ Monomono =  (function($){
     // Monomono Prototype!
     MMP = MM.prototype;
 
-    MMP.addTracks = function(tracks, prependTo, playingNum, callback){
+    MMP.login = function(response) {
+        console.log('statusChangeCallback');
+        console.log(response);
+        // The response object is returned with a status field that lets the
+        // app know the current login status of the person.
+        // Full docs on the response object can be found in the documentation
+        // for FB.getLoginStatus().
+        if (response.status === 'connected') {
+            // Logged into your app and Facebook.
+            FB.api('/me', function(response) {
+                Mono.facebookUser = response;
+                console.log('logged in', response);
+                $('.js-login').text('Log out ' + response.first_name).addClass('loggedin');
+            });
+        } else if (response.status === 'not_authorized') {
+            // The person is logged into Facebook, but not your app.
+            console.log('User not logged in');
+        } else {
+            // The person is not logged into Facebook, so we're not sure if
+            // they are logged into this app or not.
+            console.log('User not logged in');
+        }
+
+    }
+
+    MMP.addTracks = function(tracks, prependTo, playingNum, callback) {
         var trackListLength = tracks.length;
 
         for (var i = trackListLength; i--;) {
@@ -96,7 +122,12 @@ Monomono =  (function($){
         SC.get('/tracks', { q: string, limit: 10 }, function(tracks) {
             _this.selectors.searchResult.empty();
             _this.addTracks(tracks, _this.selectors.searchResult, -1, function(track, trackElement){
-                trackElement.addEventListener('click', function(){
+                trackElement.addEventListener('click', function() {
+                    if (!_this.facebookUser) {
+                        alert('You need to log in to add tracks');
+                        return;
+                    }
+                    track.addedBy = _this.facebookUser;
                     if (trackElement.classList.contains('added')) return;
                     trackElement.classList.add('added');
                     _this.socket.emit('newtrack', track);
@@ -215,6 +246,19 @@ Monomono =  (function($){
             //currentTrack.play();
         });
 
+        this.selectors.login.on('click', function() {
+            var $this = $(this);
+            if ($this.hasClass('loggedin')) {
+                FB.logout(function() {
+                    $this.text('Log in').removeClass('loggedin');
+                });
+            } else {
+                FB.login(function(response) {
+                    _this.login(response);
+                })
+            }
+        })
+
         dj.on('click', '.js-delete', function(){
             if (confirm('Sure you want to do that? Might be kind of an asshole move...')) {
                 _this.socket.emit('delete', $(this).closest('.track__info').data('id'));
@@ -246,6 +290,7 @@ Monomono =  (function($){
         var _this = this;
 
         this.socket.on('playlist', function(playlist, currentTrackNumber) {
+            console.log('playlist', playlist);
             _this.populatePlaylist(playlist, currentTrackNumber);
         });
 
@@ -279,3 +324,16 @@ Monomono =  (function($){
 })(jQuery);
 
 var Mono = new Monomono();
+
+window.fbAsyncInit = function() {
+    FB.init({
+        appId      : '950742798299424',
+        cookie     : true,  // enable cookies to allow the server to access the session
+        xfbml      : true,  // parse social plugins on this page
+        version    : 'v2.2' // use version 2.2
+    });
+
+    FB.getLoginStatus(function(response) {
+        Mono.login(response);
+    });
+};

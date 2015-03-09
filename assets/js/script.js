@@ -33,7 +33,8 @@ Monomono = (function($){
             mute: $('.js-mute'),
             searchInput: $('.js-search-input'),
             deleteSong: $('.js-delete'),
-            login: $('.js-login')
+            login: $('.js-login'),
+            userCount: $('.user-count span')
         }
 
         this.settings = {
@@ -83,32 +84,35 @@ Monomono = (function($){
             if(!tracks[i].streamable) continue;
 
             // Skapar en container för att lättare ha event listeners redo
-            var trackElement = document.createElement('li');
-                trackElement.setAttribute('class', 'track');
+            var $trackElement = $('<li>');
+            $trackElement.addClass('track');
 
             tracks[i].prettyDuration = formatDuration(tracks[i].duration);
 
             var html = Marmelad.templates.searchtrack(tracks[i]);
-            trackElement.innerHTML = html;
+            $trackElement.html(html);
+            if (tracks[i].addedBy)
+                $trackElement.data('fb-id', tracks[i].addedBy.id);
+
             if (i == playingNum) {
-                trackElement.classList.add('now-playing');
-                trackElement.classList.add('js-now-playing');
+                $trackElement.addClass('now-playing');
+                $trackElement.addClass('js-now-playing');
             } else if (i < playingNum) {
-                trackElement.classList.add('played');
+                $trackElement.addClass('played');
             }
 
             if (i == playingNum) {
-                this.currentPlayingElement = $(trackElement);
-                trackElement.classList.add('track--now-playing');
+                this.currentPlayingElement = $trackElement;
+                $trackElement.addClass('track--now-playing');
             } else if (i < playingNum) {
-                trackElement.classList.add('track--played');
+                trackElement.addClass('track--played');
             }
 
             if (callback && typeof(callback) === "function") {
-                callback(tracks[i], trackElement);
+                callback(tracks[i], $trackElement);
             }
 
-            prependTo.prepend(trackElement);
+            prependTo.prepend($trackElement);
         }
     };
 
@@ -122,14 +126,14 @@ Monomono = (function($){
         SC.get('/tracks', { q: string, limit: 10 }, function(tracks) {
             _this.selectors.searchResult.empty();
             _this.addTracks(tracks, _this.selectors.searchResult, -1, function(track, trackElement){
-                trackElement.addEventListener('click', function() {
+                trackElement.on('click', function() {
                     if (!_this.facebookUser) {
                         alert('You need to log in to add tracks');
                         return;
                     }
                     track.addedBy = _this.facebookUser;
-                    if (trackElement.classList.contains('added')) return;
-                    trackElement.classList.add('added');
+                    if (trackElement.hasClass('added')) return;
+                    trackElement.addClass('added');
                     _this.socket.emit('newtrack', track);
                 });
             });
@@ -257,10 +261,14 @@ Monomono = (function($){
                     _this.login(response);
                 })
             }
-        })
+        });
 
         dj.on('click', '.js-delete', function(){
-            if (confirm('Sure you want to do that? Might be kind of an asshole move...')) {
+            if ($(this).closest('.track').data('fb-id') !== _this.facebookUser.id) {
+                alert("Hey! That's not nice. You didn't add that song.\nDon't be a dick.");
+                return;
+            }
+            if (confirm('Sure you want to delete it?')) {
                 _this.socket.emit('delete', $(this).closest('.track__info').data('id'));
             }
         });
@@ -306,6 +314,11 @@ Monomono = (function($){
 
         this.socket.on('inqueue', function() {
             alert("That song is already in the queue. Don't be a dick!");
+        });
+
+        this.socket.on('updatedUsers', function(num) {
+            console.log('update users', num);
+            _this.selectors.userCount.text(num);
         });
     };
 

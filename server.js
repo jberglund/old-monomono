@@ -11,9 +11,11 @@ app.use(express.static(__dirname + "/dist"));
 var playlist = [],
     start,
     currentTrack = 0,
-    songTimeout;
+    songTimeout,
+    connectedUsers = 0;
 
 io.on('connection', function(socket) {
+    io.sockets.emit('updatedUsers', ++connectedUsers);
     console.log('connected to io');
     if (playlist.length) {
         console.log('sending first song', playlist[currentTrack]);
@@ -51,6 +53,10 @@ io.on('connection', function(socket) {
             }
         }
     });
+
+    socket.on('disconnect', function() {
+        io.sockets.emit('updatedUsers', --connectedUsers);
+    })
 });
 
 server.listen(port);

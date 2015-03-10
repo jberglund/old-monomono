@@ -15,11 +15,11 @@ Monomono = (function($){
     function MM(){
 
         // Global variables
-        this.currentItemIndex;
-        this.searchResultArrayLength;
-        this.currentPlayingTrack;
-        this.currentPlayingElement;
-        this.facebookUser;
+        this.currentItemIndex = 0;
+        this.searchResultArrayLength = 0;
+        this.currentPlayingTrack = null;
+        this.currentPlayingElement = null;
+        this.facebookUser = null;
 
         this.selectors = {
             searchResult: $('.js-search-result'),
@@ -35,14 +35,14 @@ Monomono = (function($){
             deleteSong: $('.js-delete'),
             login: $('.js-login'),
             userCount: $('.user-count span')
-        }
+        };
 
         this.settings = {
             url: location.hostname === 'localhost' ? 'http://127.0.0.1:5000' : 'https://monomono.herokuapp.com/',
-        }
+        };
 
 
-        this.socket = io.connect(this.settings.url, { resource: 'assets/js/vendor/socket.js' })
+        this.socket = io.connect(this.settings.url, { resource: 'assets/js/vendor/socket.js' });
 
         this.bindEvents();
         this.bindSockets();
@@ -74,8 +74,7 @@ Monomono = (function($){
             // they are logged into this app or not.
             console.log('User not logged in');
         }
-
-    }
+    };
 
     MMP.addTracks = function(tracks, prependTo, playingNum, callback) {
         var trackListLength = tracks.length;
@@ -105,7 +104,7 @@ Monomono = (function($){
                 this.currentPlayingElement = $trackElement;
                 $trackElement.addClass('track--now-playing');
             } else if (i < playingNum) {
-                trackElement.addClass('track--played');
+                $trackElement.addClass('track--played');
             }
 
             if (callback && typeof(callback) === "function") {
@@ -171,7 +170,7 @@ Monomono = (function($){
             _this.currentPlayingTrack = sound;
              if (sound) sound.play();
          });
-    }
+    };
 
     // Keyboard controls
     MMP.goTo = function(index){
@@ -242,6 +241,7 @@ Monomono = (function($){
                 case 27: // Esc
                     e.preventDefault();
                     _this.clearResults();
+                    break;
                 default: return;
             }
         });
@@ -259,7 +259,7 @@ Monomono = (function($){
             } else {
                 FB.login(function(response) {
                     _this.login(response);
-                })
+                });
             }
         });
 

@@ -37,6 +37,8 @@ $menu:	 				$light-yellow;
 $active-track-bg: 		$purple;
 $secondary-bg-color:	$light-yellow;
 
+
+$default-ease: cubic-bezier(0.230, 1.000, 0.320, 1.000);
 *, *:after,*:before{
 	box-sizing: border-box;
 }
@@ -54,6 +56,7 @@ h1, h2, h3, h4{
 
 .container{
 	padding-top: 120px;
+	padding-bottom: 2000px;
 }
 
 .js-state--mute { text-decoration: line-through; }
@@ -77,6 +80,18 @@ h1, h2, h3, h4{
 	display: none;
 	margin-right: 0.5em;
 }
+.control-container{
+	width: 100%;
+	position: fixed;
+	bottom: 1em;
+	left: 1em;
+}
+.control-button{
+	background-color: $secondary-bg-color;
+	padding: 0.5em;
+	margin-right: 0.5em;
+	display: inline-block;
+}
 .search-button-container {
 	float: right;
 	margin-right: 20px;
@@ -92,7 +107,7 @@ h1, h2, h3, h4{
 	svg {
 		width: 36px;
 
-		g { transition: transform .3s ease; }
+		g { transition: transform .3s $default-ease; }
 		#closeSearch { transform: translate(-50px, 50px); }
 		.search--open & {
 			#lines { transform: translate(-50px, 50px); }
@@ -101,22 +116,7 @@ h1, h2, h3, h4{
 	}
 }
 
-.mute {
-	position: absolute;
-	left: 45%;
-	z-index: 300;
-}
-.js-login {
-	position: absolute;
-	left: 20%;
-	z-index: 300;
-}
 
-.user-count {
-	position: absolute;
-	left: 70%;
-	z-index: 300;
-}
 
 .logo{
 	font-size: 2em;
@@ -127,20 +127,17 @@ h1, h2, h3, h4{
 	float: left;
 }
 .search-container{
-	padding: 1.6em 0;
 	top: 0px;
 	z-index: 200;
 	width: 100%;
+	height: 120px;
 	left: 0;
-	position: absolute;
-	opacity: 0;
-	transition: opacity .2s ease;
+	position: fixed;
+	transition: opacity .2s $default-ease;
+	//background-color: $secondary-bg-color;
 
 	.search--open & { opacity: 1; }
-	ul {
-		background-color: $secondary-bg-color;
-		border-top: 1px solid rgba(0,0,0,.1);
-	}
+
 }
 
 
@@ -154,21 +151,42 @@ h1, h2, h3, h4{
 }
 
 .search-bar{
-	background-color: $secondary-bg-color;
-	width: calc(100% - 60px);
-	padding: 0.5em;
-	margin-bottom: 24px;
+	background-color: rgb(170, 171, 125);
+	//background-color: white;
+	width: 320px;
+	padding: 0 1em;
+	height: 50px;
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	right: 1em;
+	line-height: 50px;
 	border: 0;
 	color: black;
-	font-size: 25px;
-	transition: 300ms all ease;
+	font-size: 1em;
+	transition: 300ms all $default-ease;
+
 	&:focus{
 		outline: none;
+		right: 0;
+		line-height: 120px;
+		font-size: 2em;
+		width: 100%;
+		height: 100%;
+		background-color: #E9E9D4;
 		//background-color: darken($secondary-bg-color, 10%);
+	}
+	&::-webkit-input-placeholder{
+		color: #454545;
+	}
+	&:focus::-webkit-input-placeholder{
+		color: transparent;
 	}
 }
 .search-result {
+	margin: 120px 0 0;
 	padding: 0;
+	background-color: $secondary-bg-color;
 	.track__played { display: none; }
 }
 
@@ -178,12 +196,13 @@ h1, h2, h3, h4{
 	clear: both;
 	height: 72px;
 	width: 100%;
+	padding: 0 1em;
 	font-size: 14px;
 	color: #fff;
 	position: relative;
 
 	&--highlight{
-		background-color: #454545;
+		background-color: darken($secondary-bg-color, 10%);
 	}
 
 	&--now-playing {
@@ -196,21 +215,45 @@ h1, h2, h3, h4{
 		right: 20px;
 		transform: translateY(-50%);
 		cursor: pointer;
+		opacity: 0;
+		transition: 300ms all $default-ease;
+		border: 1px solid white;
+		padding: 0.3em 0.5em 0.4em;
 		.now-playing &, .search-result &{
 			display: none;
 		}
+		&:hover{
+			background-color: #fff;
+			color: #454545;
+		}
+	}
+
+	&__assets {
+		display: block;
+		z-index: 2;
+		position: absolute;
+		left: 1.5em;
+		top: 0;
+		border-radius: 50%;
+		overflow: hidden;
+		width: 46px;
+		height: 46px;
+		top: 50%;
+		transform: translateY(-50%);
 	}
 
 	&__added-icon {
 		text-align: center;
 		background: #fff;
+
+		position: absolute;
 		width: 100%;
 		height: 100%;
 		top: 0;
 		left: 0;
 		z-index: 2;
-		position: absolute;
-		transition: opacity .2s ease;
+
+		transition: opacity .2s $default-ease;
 		opacity: 0;
 		.added &{ opacity: 1; }
 		svg {
@@ -220,20 +263,7 @@ h1, h2, h3, h4{
 			transform: translateY(-50%);
 		}
 	}
-	&__assets {
-		display: block;
-		z-index: 2;
-		position: absolute;
-		left: 0;
-		top: 0;
-		border-radius: 50%;
-		overflow: hidden;
-		width: 46px;
-		height: 46px;
-		position: absolute;
-		top: 50%;
-		transform: translateY(-50%);
-	}
+
 	&__img{
 		width: 100%;
 		border-radius: 50%;
@@ -268,6 +298,13 @@ h1, h2, h3, h4{
 	}
 
 	&--played { opacity: .25; }
+	&:hover{
+		.track__delete{
+			opacity: 1;
+			transform: translateY(-50%);
+
+		}
+	}
 }
 
 &.added .track__info { opacity: .25; }

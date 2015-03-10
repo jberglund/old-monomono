@@ -13,12 +13,12 @@
 	<header class="masthead">
 		<div class="logo">monomono</div>
 
-		<div class="controls">
+		<!-- <div class="controls">
 			<span class="control-button js-reset" id="reset">Reset the shit</span>
 			<span class="control-button js-iosplay" id="iosplay">iOS play</span>
-		</div>
-		<div class="search-button-container">
-			<span class="js-search search-button" id="search">
+		</div> -->
+		<!--<div class="search-button-container">
+			 <span class="js-search search-button" id="search">
 				<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36" enable-background="new 0 0 36 36" xml:space="preserve">
 					<path d="M13.5,0C21,0,27,6,27,13.5c0,3.1-1.1,6-2.8,8.3l11.4,11.4c0.3,0.3,0.5,0.8,0.5,1.2c0,0.4-0.2,0.9-0.5,1.2
 						c-0.3,0.3-0.8,0.5-1.2,0.5s-0.9-0.2-1.2-0.5L21.8,24.2c-2.3,1.8-5.1,2.8-8.3,2.8C6,27,0,21,0,13.5S6,0,13.5,0z M13.5,23.6
@@ -39,13 +39,11 @@
 					</g>
 				</svg>
 			</span>
-		</div>
+		</div>-->
 	</header>
-	<span class="js-mute mute" id="mute">Mute</span>
-	<span class="js-login">Log in</span>
-	<span class="user-count">Users: <span></span></span>
+
 	<div class="search-container">
-		<input type="text" class="search-bar js-search-input">
+		<input type="text" class="search-bar js-search-input" placeholder="search">
 		<span class="js-search fake-button search-button"></span>
 		<ul class="js-search-result search-result">
 			<!-- template -->
@@ -58,6 +56,11 @@
 				<!-- template -->
 			</ul>
 		</div>
+	</div>
+	<div class="control-container">
+	<span class="js-login control-button">Log in</span>
+	<span class="js-mute mute control-button" id="mute">Mute</span>
+	<span class="user-count control-button">Users: <span class="number-of-users js-number-of-users"></span></span>
 	</div>
 	<script>
 		(function(d, s, id){

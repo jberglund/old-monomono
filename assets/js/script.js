@@ -47,7 +47,7 @@ Monomono = (function($){
             searchInput: $('.js-search-input'),
             deleteSong: $('.js-delete'),
             login: $('.js-login'),
-            userCount: $('.user-count span')
+            userCount: $('.js-number-of-users')
         };
 
         this.settings = {
@@ -59,7 +59,7 @@ Monomono = (function($){
 
         this.bindEvents();
         this.bindSockets();
-        //this.bindKeyboard();
+        this.bindKeyboard();
     }
 
     // Monomono Prototype!
@@ -105,13 +105,6 @@ Monomono = (function($){
             $trackElement.html(html);
             if (tracks[i].addedBy)
                 $trackElement.data('fb-id', tracks[i].addedBy.id);
-
-            if (i == playingNum) {
-                $trackElement.addClass('now-playing');
-                $trackElement.addClass('js-now-playing');
-            } else if (i < playingNum) {
-                $trackElement.addClass('played');
-            }
 
             if (i == playingNum) {
                 this.currentPlayingElement = $trackElement;
@@ -216,47 +209,27 @@ Monomono = (function($){
     MMP.clearResults = function (){
         this.selectors.searchResult.empty();
         this.selectors.searchInput.val('');
+        this.toggleSearch();
         this.currentItemIndex = -1;
     };
     // End Keyboard control
 
+    MMP.toggleSearch = function(){
+
+        if (db.classList.contains('search--open')) {
+            db.classList.remove('search--open');
+            this.selectors.searchResult.empty();
+        } else {
+            db.classList.add('search--open');
+
+        }
+    }
+
     MMP.bindEvents = function(){
         var _this = this;
-        var timer = null;
 
-        this.selectors.searchInput.on('keypress', function() {
-            var thisElement = $(this);
-            _this.currentItemIndex = -1;
-            if (timer) {
-                window.clearTimeout(timer);
-            }
-
-            timer = window.setTimeout( function() {
-                timer = null;
-                _this.searchTracks(thisElement.val());
-            }, 400 );
-        });
-
-        dj.keydown(function(e){
-            switch(e.keyCode){
-                case 38: // Arrow up
-                    e.preventDefault();
-                    _this.onPrevResult();
-                    break;
-                case 40: // Arrow down
-                    e.preventDefault();
-                    _this.onNextResult();
-                    break;
-                case 13: // Return key
-                    e.preventDefault();
-                    _this.selectResult();
-                    break;
-                case 27: // Esc
-                    e.preventDefault();
-                    _this.clearResults();
-                    break;
-                default: return;
-            }
+        this.selectors.search.on('click', function(){
+            //_this.toggleSearch();
         });
 
         this.selectors.iosPlay.on('click', function() {
@@ -293,19 +266,76 @@ Monomono = (function($){
             }
         });
 
-        this.selectors.search.on('click', function() {
-            _this.selectors.searchContainer.addClass('search--show');
-            if (db.classList.contains('search--open')) {
-                db.classList.remove('search--open');
-                _this.selectors.searchResult.empty();
-
-            } else {
-                document.body.classList.add('search--open');
-                _this.selectors.searchInput.focus();
-
-            }
-        });
     };
+
+    MMP.bindKeyboard = function(){
+        var _this = this;
+        var timer = null;
+
+        this.selectors.searchInput.on('keypress', function() {
+            var thisElement = $(this);
+            _this.currentItemIndex = -1;
+            if (timer) {
+                window.clearTimeout(timer);
+            }
+
+            timer = window.setTimeout( function() {
+                timer = null;
+                _this.searchTracks(thisElement.val());
+            }, 400 );
+        });
+
+        function searchKeys(e){
+            switch(e.keyCode){
+                case 38: // Arrow up
+                    e.preventDefault();
+                    _this.onPrevResult();
+                    break;
+                case 40: // Arrow down
+                    e.preventDefault();
+                    _this.onNextResult();
+                    break;
+                case 13: // Return key
+                    e.preventDefault();
+                    _this.selectResult();
+                    break;
+                case 27: // Esc
+                    e.preventDefault();
+                    _this.clearResults();
+                    _this.selectors.searchInput.blur();
+                    break;
+                default: return;
+            }
+        }
+
+        function shortKeys(e){
+            console.log(e.keyCode);
+            switch(e.keyCode){
+                case 83: // Arrow up
+                    e.preventDefault();
+                    _this.selectors.searchInput.focus();
+                    break;
+                default: return;
+            }
+        }
+
+        this.selectors.searchInput.on('focus', function(){
+            $(this).keydown(searchKeys);
+            _this.toggleSearch();
+            dj.unbind('keydown');
+        });
+
+        this.selectors.searchInput.on('blur', function(){
+            $(this).unbind('keydown');
+            _this.toggleSearch();
+            dj.keydown(shortKeys);
+        });
+
+        // On init.
+        (function(){
+            dj.keydown(shortKeys);
+        })();
+    }
 
     MMP.bindSockets = function(){
         var _this = this;

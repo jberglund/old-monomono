@@ -14,5 +14,5 @@ this["Marmelad"]["templates"]["searchtrack"] = Handlebars.template({"compiler":[
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.username : stack1), depth0))
     + "</div>\n        <div class=\"track__duration\">"
     + escapeExpression(((helper = (helper = helpers.prettyDuration || (depth0 != null ? depth0.prettyDuration : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"prettyDuration","hash":{},"data":data}) : helper)))
-    + "</div>\n        <div class=\"track__delete js-delete\">Del</div>\n    </div>\n    <div class=\"track__seek\">\n        <span class=\"track__seek__indicator\"></span>\n    </div>\n</div>\n";
+    + "</div>\n        <div class=\"track__delete js-delete\">Remove</div>\n    </div>\n    <div class=\"track__seek\">\n        <span class=\"track__seek__indicator\"></span>\n    </div>\n</div>\n";
 },"useData":true});

@@ -309,7 +309,6 @@ Monomono = (function($){
         }
 
         function shortKeys(e){
-            console.log(e.keyCode);
             switch(e.keyCode){
                 case 83: // Arrow up
                     e.preventDefault();

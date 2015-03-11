@@ -219,13 +219,11 @@ Monomono = (function($){
     // End Keyboard control
 
     MMP.toggleSearch = function(){
-
         if (db.classList.contains('search--open')) {
             db.classList.remove('search--open');
             this.selectors.searchResult.empty();
         } else {
             db.classList.add('search--open');
-
         }
     }
 

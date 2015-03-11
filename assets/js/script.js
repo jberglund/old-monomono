@@ -70,6 +70,7 @@ Monomono = (function($){
     MMP.login = function(response) {
         console.log('statusChangeCallback');
         console.log(response);
+        var _this = this;
         // The response object is returned with a status field that lets the
         // app know the current login status of the person.
         // Full docs on the response object can be found in the documentation
@@ -80,6 +81,7 @@ Monomono = (function($){
                 Mono.facebookUser = response;
                 console.log('logged in', response);
                 $('.js-login').text('Log out ' + response.first_name).addClass('loggedin');
+                _this.selectors.chatForm.find('input').removeAttr('disabled');
             });
         } else if (response.status === 'not_authorized') {
             // The person is logged into Facebook, but not your app.
@@ -338,6 +340,11 @@ Monomono = (function($){
             var msg = $('input', this).val();
             _this.socket.emit('chatMsg', msg, _this.facebookUser);
             $('input', this).val('');
+        });
+
+        this.selectors.chatForm.on('click', function() {
+            if ($('input', this).attr('disabled'))
+                alert("We want to know who's sending them dirty messages.\nLog in to chat.")
         });
 
         // On init.

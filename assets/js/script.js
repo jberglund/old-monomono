@@ -47,7 +47,9 @@ Monomono = (function($){
             searchInput: $('.js-search-input'),
             deleteSong: $('.js-delete'),
             login: $('.js-login'),
-            userCount: $('.js-number-of-users')
+            userCount: $('.js-number-of-users'),
+            chatForm: $('.chat-container form'),
+            chatLog: $('#messages ul')
         };
 
         this.settings = {
@@ -310,13 +312,13 @@ Monomono = (function($){
 
         function shortKeys(e){
             console.log(e.keyCode);
-            switch(e.keyCode){
+            /*switch(e.keyCode){
                 case 83: // Arrow up
                     e.preventDefault();
                     _this.selectors.searchInput.focus();
                     break;
                 default: return;
-            }
+            }*/
         }
 
         this.selectors.searchInput.on('focus', function(){
@@ -329,6 +331,13 @@ Monomono = (function($){
             $(this).unbind('keydown');
             _this.toggleSearch();
             dj.keydown(shortKeys);
+        });
+
+        this.selectors.chatForm.on('submit', function(e) {
+            e.preventDefault();
+            var msg = $('input', this).val();
+            _this.socket.emit('chatMsg', msg, _this.facebookUser);
+            $('input', this).val('');
         });
 
         // On init.
@@ -362,6 +371,18 @@ Monomono = (function($){
         this.socket.on('updatedUsers', function(num) {
             console.log('update users', num);
             _this.selectors.userCount.text(num);
+        });
+
+        this.socket.on('updateChat', function(user) {
+            var html = Marmelad.templates.chatmessage(user);
+            _this.selectors.chatLog.append(html);
+        });
+
+        this.socket.on('allChat', function(chat) {
+            for (var i = 0; i < chat.length; i++) {
+                var html = Marmelad.templates.chatmessage(chat[i]);
+                _this.selectors.chatLog.append(html);
+            }
         });
     };
 

@@ -12,7 +12,8 @@ var playlist = [],
     start,
     currentTrack = 0,
     songTimeout,
-    connectedUsers = 0;
+    connectedUsers = 0,
+    chat = [];
 
 io.on('connection', function(socket) {
     io.sockets.emit('updatedUsers', ++connectedUsers);
@@ -21,6 +22,9 @@ io.on('connection', function(socket) {
         console.log('sending first song', playlist[currentTrack]);
         socket.emit('playSong', playlist[currentTrack], (new Date()).getTime() - start);
         socket.emit('playlist', playlist, currentTrack);
+    }
+    if (chat.length) {
+        socket.emit('allChat', chat);
     }
     socket.on('newtrack', function(track) {
         for (var i = 0; i < playlist.length; i++) {
@@ -54,9 +58,16 @@ io.on('connection', function(socket) {
         }
     });
 
+    socket.on('chatMsg', function(msg, user) {
+        user.msg = msg
+        console.log('chat', user);
+        chat.push(user);
+        io.sockets.emit('updateChat', user);
+    });
+
     socket.on('disconnect', function() {
         io.sockets.emit('updatedUsers', --connectedUsers);
-    })
+    });
 });
 
 server.listen(port);

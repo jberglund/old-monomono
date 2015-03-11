@@ -314,13 +314,13 @@ Monomono = (function($){
 
         function shortKeys(e){
             console.log(e.keyCode);
-            /*switch(e.keyCode){
+            switch(e.keyCode){
                 case 83: // Arrow up
                     e.preventDefault();
                     _this.selectors.searchInput.focus();
                     break;
                 default: return;
-            }*/
+            }
         }
 
         this.selectors.searchInput.on('focus', function(){
@@ -345,6 +345,14 @@ Monomono = (function($){
         this.selectors.chatForm.on('click', function() {
             if ($('input', this).attr('disabled'))
                 alert("We want to know who's sending them dirty messages.\nLog in to chat.")
+        });
+
+        $('input', this.selectors.chatForm).on('blur focus', function(e) {
+            if (e.type == 'focus') {
+                dj.unbind('keydown');
+            } else {
+                dj.keydown(shortKeys);
+            }
         });
 
         // On init.

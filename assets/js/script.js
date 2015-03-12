@@ -49,7 +49,8 @@ Monomono = (function($){
             login: $('.js-login'),
             userCount: $('.js-number-of-users'),
             chatForm: $('.chat-container form'),
-            chatLog: $('#messages ul')
+            chatLog: $('#messages ul'),
+            chatToggle: $('.chat-container h2 small')
         };
 
         this.settings = {
@@ -236,6 +237,10 @@ Monomono = (function($){
 
         this.selectors.iosPlay.on('click', function() {
             //currentTrack.play();
+        });
+
+        this.selectors.chatToggle.on('click', function() {
+            $(this).closest('.chat-container').toggleClass('show');
         });
 
         this.selectors.login.on('click', function() {

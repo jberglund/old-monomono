@@ -59,7 +59,7 @@ io.on('connection', function(socket) {
     });
 
     socket.on('chatMsg', function(msg, user) {
-        user.msg = msg
+        user.msg = msg;
         console.log('chat', user);
         chat.push(user);
         io.sockets.emit('updateChat', user);
@@ -81,5 +81,6 @@ function playNextSong() {
     io.sockets.emit('playSong', playlist[currentTrack], 0);
     io.sockets.emit('playlist', playlist, currentTrack);
     start = (new Date()).getTime();
+    clearTimeout(songTimeout);
     songTimeout = setTimeout(playNextSong, playlist[currentTrack].duration + 10);
 }

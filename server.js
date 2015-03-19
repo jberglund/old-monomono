@@ -75,7 +75,9 @@ server.listen(port);
 function playNextSong() {
     currentTrack++;
     if (currentTrack == playlist.length) {
-        currentTrack = 0;
+        currentTrack--;
+        var lastSong = playlist.shift(0,1);
+        playlist.push(lastSong);
     }
     console.log('playing next song', playlist);
     io.sockets.emit('playSong', playlist[currentTrack], 0);

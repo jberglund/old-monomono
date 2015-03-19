@@ -83,6 +83,7 @@ Monomono = (function($){
                 console.log('logged in', response);
                 $('.js-login').text('Log out ' + response.first_name).addClass('loggedin');
                 _this.selectors.chatForm.find('input').removeAttr('disabled');
+                _this.socket.emit('fb-login', response);
             });
         } else if (response.status === 'not_authorized') {
             // The person is logged into Facebook, but not your app.
@@ -388,9 +389,9 @@ Monomono = (function($){
             alert("That song is already in the queue. Don't be a dick!");
         });
 
-        this.socket.on('updatedUsers', function(num) {
-            console.log('update users', num);
-            _this.selectors.userCount.text(num);
+        this.socket.on('updatedUsers', function(users) {
+            console.log('update users', users);
+            _this.selectors.userCount.text(users.length);
         });
 
         this.socket.on('updateChat', function(user) {

@@ -12,11 +12,10 @@ var playlist = [],
     start,
     currentTrack = 0,
     songTimeout,
-    connectedUsers = 0,
+    users = [],
     chat = [];
 
 io.on('connection', function(socket) {
-    io.sockets.emit('updatedUsers', ++connectedUsers);
     console.log('connected to io');
     if (playlist.length) {
         console.log('sending first song', playlist[currentTrack]);
@@ -65,8 +64,28 @@ io.on('connection', function(socket) {
         io.sockets.emit('updateChat', user);
     });
 
+    //users
+    var user = {
+        id: socket.id,
+        name: 'anonymous',
+        img: '/assets/static/img/default.jpg'
+    }
+    users.push(user);
+    io.sockets.emit('updatedUsers', users);
+    socket.on('fb-login', function(fbUser) {
+        console.log('fb-login', fbUser);
+        getUser(socket.id, function(u, i) {
+            user.name = fbUser.name;
+            user.img = 'http://graph.facebook.com/' + fbUser.id + '/picture';
+            io.sockets.emit('updatedUsers', users);
+        });
+    });
+
     socket.on('disconnect', function() {
-        io.sockets.emit('updatedUsers', --connectedUsers);
+        getUser(user.id, function(u, i) {
+            users.splice(i, 1);
+            io.sockets.emit('updatedUsers', users);
+        });
     });
 });
 
@@ -85,4 +104,13 @@ function playNextSong() {
     start = (new Date()).getTime();
     clearTimeout(songTimeout);
     songTimeout = setTimeout(playNextSong, playlist[currentTrack].duration + 10);
+}
+
+function getUser(id, callback) {
+    for (var i = 0; i < users.length; i++) {
+        if (users[i].id == id) {
+            callback(users[i], i);
+            return;
+        }
+    }
 }

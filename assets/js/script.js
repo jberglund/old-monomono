@@ -105,7 +105,7 @@ Monomono = (function($){
             $trackElement.addClass('track');
 
             tracks[i].prettyDuration = formatDuration(tracks[i].duration);
-            tracks[i].artwork_url = tracks[i].artwork_url || '/assets/img/default.jpg';
+            tracks[i].artwork_url = tracks[i].artwork_url || '/assets/static/img/default.jpg';
 
             var html = Marmelad.templates.searchtrack(tracks[i]);
             $trackElement.html(html);

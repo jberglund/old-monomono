@@ -180,6 +180,7 @@ Monomono = (function($){
          }, function(sound){
             _this.currentPlayingTrack = sound;
              if (sound) sound.play();
+             document.title = track.title + ' - monomono';
          });
     };
 

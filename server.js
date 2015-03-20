@@ -1,10 +1,11 @@
-var express = require("express");
-var app = express();
-var client = express();
-var server = require("http").createServer(app);
-var io = require('socket.io')(server);
-var port = process.env.PORT || 5000;
-
+var express = require("express"),
+    app = express(),
+    client = express(),
+    server = require("http").createServer(app),
+    io = require('socket.io')(server),
+    port = process.env.PORT || 5000,
+    mongo = require("mongodb"),
+    mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost:27017/monomono';
 
 app.use(express.static(__dirname + "/dist"));
 
@@ -14,6 +15,25 @@ var playlist = [],
     songTimeout,
     users = [],
     chat = [];
+
+//http://www.hacksparrow.com/how-to-install-mongodb-on-mac-os-x.html
+//http://www.hacksparrow.com/the-mongodb-tutorial.html
+new mongo.Db.connect(mongoUri, function(error, mongoClient) {
+	if (error) throw error;
+	playlistDb = new mongo.Collection(mongoClient, "playlist");
+    playlistDb.find({name:'room1'}).toArray(function(err, docs) {
+		if (err) throw err;
+        console.log('getting doc', docs);
+        if (!docs.length) {
+            console.log('insert');
+            playlistDb.insert({name:'room1', playlist:playlist}, {w:1}, function(err) {
+				if (err) throw err;
+			});
+        } else {
+            playlist = docs[0].playlist;
+        }
+	});
+});
 
 io.on('connection', function(socket) {
     console.log('connected to io');
@@ -33,14 +53,15 @@ io.on('connection', function(socket) {
             }
         }
         playlist.push(track);
-        console.log('added track', playlist);
         if (playlist.length === 1) playNextSong();
         io.sockets.emit('playlist', playlist, currentTrack);
+        updatePlaylist();
     });
 
     socket.on('reset', function() {
         playlist = [];
         clearTimeout(songTimeout);
+        updatePlaylist();
         console.log('Resetted');
     });
 
@@ -73,7 +94,6 @@ io.on('connection', function(socket) {
     users.push(user);
     io.sockets.emit('updatedUsers', users);
     socket.on('fb-login', function(fbUser) {
-        console.log('fb-login', fbUser);
         getUser(socket.id, function(u, i) {
             user.name = fbUser.name;
             user.img = 'http://graph.facebook.com/' + fbUser.id + '/picture';
@@ -91,6 +111,12 @@ io.on('connection', function(socket) {
 
 server.listen(port);
 
+function updatePlaylist() {
+    playlistDb.update({name:'room1'}, {name:'room1',playlist: playlist}, function(err) {
+        if (err) throw err;
+    });
+}
+
 function playNextSong() {
     currentTrack++;
     if (currentTrack == playlist.length) {
@@ -98,7 +124,6 @@ function playNextSong() {
         var lastSong = playlist.shift(0,1);
         playlist.push(lastSong);
     }
-    console.log('playing next song', playlist);
     io.sockets.emit('playSong', playlist[currentTrack], 0);
     io.sockets.emit('playlist', playlist, currentTrack);
     start = (new Date()).getTime();

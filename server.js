@@ -10,7 +10,7 @@ var express = require("express"),
 app.use(express.static(__dirname + "/dist"));
 
 var playlist = [],
-    start,
+    start = (new Date()).getTime(),
     currentTrack = 0,
     songTimeout,
     users = [],
@@ -23,7 +23,7 @@ new mongo.Db.connect(mongoUri, function(error, mongoClient) {
 	playlistDb = new mongo.Collection(mongoClient, "playlist");
     playlistDb.find({name:'room1'}).toArray(function(err, docs) {
 		if (err) throw err;
-        console.log('getting doc', docs);
+        console.log('getting doc');
         if (!docs.length) {
             console.log('insert');
             playlistDb.insert({name:'room1', playlist:playlist}, {w:1}, function(err) {
@@ -38,7 +38,7 @@ new mongo.Db.connect(mongoUri, function(error, mongoClient) {
 io.on('connection', function(socket) {
     console.log('connected to io');
     if (playlist.length) {
-        console.log('sending first song', playlist[currentTrack]);
+        console.log('sending first song');
         socket.emit('playSong', playlist[currentTrack], (new Date()).getTime() - start);
         socket.emit('playlist', playlist, currentTrack);
     }
@@ -80,7 +80,7 @@ io.on('connection', function(socket) {
 
     socket.on('chatMsg', function(msg, user) {
         user.msg = msg;
-        console.log('chat', user);
+        console.log('chat');
         chat.push(user);
         io.sockets.emit('updateChat', user);
     });

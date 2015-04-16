@@ -59,6 +59,9 @@ Monomono = (function($){
 
 
         this.socket = io.connect(this.settings.url, { resource: 'assets/js/vendor/socket.js' });
+        var params = location.pathname.split('/');
+        if (params.length > 1)
+            this.socket.emit('joinroom', params[1]);
 
         this.bindEvents();
         this.bindSockets();
@@ -255,7 +258,7 @@ Monomono = (function($){
             } else {
                 FB.login(function(response) {
                     _this.login(response);
-                });
+                }, { scope: 'public_profile, email' });
             }
         });
 

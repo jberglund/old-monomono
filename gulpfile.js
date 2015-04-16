@@ -11,13 +11,16 @@ declare = require('gulp-declare'),
 handlebars = require('gulp-handlebars'),
 runSeq = require('run-sequence');
 
-gulp.task('express', function() {
+/*gulp.task('express', function() {
 	var express = require('express');
 	var app = express();
 	app.use(require('connect-livereload')({port: 4002}));
 	app.use(express.static(__dirname + '/dist'));
+	app.get('/*', function(req, res) {
+		console.log(req.params);
+	})
 	app.listen(4000);
-});
+});*/
 
 var tinylr;
 
@@ -95,7 +98,7 @@ gulp.task('watch', function() {
 
 });
 
-gulp.task('default', ['sass', 'js', 'express', 'livereload', 'assets', 'templates', 'watch', 'html'], function() {
+gulp.task('default', ['sass', 'js', 'livereload', 'assets', 'templates', 'watch', 'html'], function() {
 
 });
 

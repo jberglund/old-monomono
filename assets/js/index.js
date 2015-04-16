@@ -10,3 +10,16 @@ window.fbAsyncInit = function() {
         console.log(response);
     });
 };
+
+(function() {
+    var socketUrl = location.hostname === 'localhost' ? 'http://127.0.0.1:5000' : 'https://monomono.herokuapp.com/',
+        socket = io.connect(socketUrl, { resource: 'assets/js/vendor/socket.js' });
+
+    socket.emit('getRooms');
+    socket.on('rooms', function(rooms) {
+        console.log('rooms', rooms);
+        for (var i = 0; i < rooms.length; i++) {
+            $('#rooms').prepend('<li><a href="/' + rooms[i].name + '">' + rooms[i].name + '</a></li>')
+        }
+    });
+})();

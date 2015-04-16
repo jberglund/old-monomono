@@ -392,6 +392,7 @@ Monomono = (function($){
 
         this.socket.on('playSong', function(track, skipTo) {
             if (!track) return;
+            console.log('play song', track, skipTo);
             SC.streamStopAll();
             _this.playTrack(track, skipTo);
         });

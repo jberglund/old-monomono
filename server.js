@@ -17,7 +17,7 @@ app.get('/:room', function(req, res) {
     var options = {
         root: __dirname + '/dist/',
     };
-    console.log(rooms);
+    console.log('get rooms', rooms);
     if (!rooms[req.params.room]) {
         res.sendFile('noroom.html', options);
         return;
@@ -48,7 +48,7 @@ mongo.connect(mongoUri, function(error, db) {
 });
 
 io.on('connection', function(socket) {
-    console.log('connected to io');
+    console.log('connected to io', rooms);
     var user = {
         id: socket.id,
         name: 'anonymous',
@@ -56,10 +56,28 @@ io.on('connection', function(socket) {
         room: ''
     };
 
+    /*
+        FRONTPAGE
+    */
+    socket.on('getRooms', function() {
+        //console.log('getting rooms', rooms);
+        var tempRooms = []
+        for (var room in rooms) {
+            var temp = rooms[room];
+            temp.name = room;
+            tempRooms.push(temp);
+        }
+        socket.emit('rooms', tempRooms);
+    });
+
+
+
+    /*
+        ROOMS
+    */
     socket.on('joinroom', function(room) {
         user.room = room;
         socket.join(room);
-
         rooms[user.room].users.push(user);
         io.to(user.room).emit('updatedUsers', rooms[user.room].users);
 
@@ -94,9 +112,16 @@ io.on('connection', function(socket) {
         updatePlaylist(user.room);
     });
 
+    socket.on('reboot', function() {
+        clearTimeout(rooms[user.room].songTimeout);
+        rooms[user.room].start = (new Date()).getTime();
+        rooms[user.room].currentTrack = 0;
+        playNextSong(user.room);
+    });
+
     socket.on('reset', function() {
         playlist = [];
-        clearTimeout(songTimeout);
+        clearTimeout(rooms[user.room].songTimeout);
         updatePlaylist(user.room);
         console.log('Resetted');
     });

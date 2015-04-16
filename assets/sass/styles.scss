@@ -101,11 +101,10 @@ h1, h2, h3, h4{
 	list-style: none;
 
 	li {
-		width: 200px;
-		height: 200px;
-		background: #fff;
-		display: inline-block;
-		clip-path: url(#hexagon);
+		//background: #fff;
+		//display: inline-block;
+		//clip-path: url(#hexagon);
+		color: #fff;
 	}
 }
 

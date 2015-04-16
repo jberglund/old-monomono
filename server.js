@@ -70,6 +70,14 @@ io.on('connection', function(socket) {
         socket.emit('rooms', tempRooms);
     });
 
+    socket.on('newroom', function(room) {
+        console.log('new room', room);
+        rooms[room] = {
+            playlist: []
+        };
+        updatePlaylist(room);
+    });
+
 
 
     /*
@@ -89,13 +97,6 @@ io.on('connection', function(socket) {
         if (rooms[user.room].chat.length) {
             socket.emit('allChat', rooms[user.room].chat);
         }
-    });
-
-    socket.on('newroom', function(room) {
-        users[room] = {
-            playlist: []
-        };
-        updatePlaylist(room);
     });
 
     socket.on('newtrack', function(track) {

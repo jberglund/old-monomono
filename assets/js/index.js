@@ -22,4 +22,13 @@ window.fbAsyncInit = function() {
             $('#rooms').prepend('<li><a href="/' + rooms[i].name + '">' + rooms[i].name + '</a></li>')
         }
     });
+
+    $(document).on('click', '#rooms .new', function() {
+        var room = '';
+        while (!room)
+            room = prompt('What would you like to call this room?');
+
+        socket.emit('newroom', room);
+        location.href = '/' + room;
+    });
 })();

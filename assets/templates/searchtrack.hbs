@@ -10,9 +10,17 @@
     </span>
     </div>
     <div class="track__info" data-id="{{id}}">
-        <h4 class="track__title">{{title}} <small>({{addedBy.name}})</small></h4>
+        <h4 class="track__title">
+            {{title}}
+            <span class="duration">{{prettyDuration}}</span>
+            <span class="plays">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 9.08 13">
+                    <path d="M8.8,5.92L1.16,0.15C0.94-0.02,0.64-0.05,0.4,0.08C0.16,0.2,0,0.45,0,0.72v11.56c0,0.27,0.16,0.52,0.4,0.65 C0.5,12.97,0.61,13,0.72,13c0.15,0,0.31-0.05,0.44-0.15L8.8,7.08C8.98,6.94,9.08,6.73,9.08,6.5C9.08,6.27,8.98,6.06,8.8,5.92z"/>
+                </svg>
+                {{playback_count}}
+            </span>
+        </h4>
         <div class="track__username">{{user.username}}</div>
-        <div class="track__duration">{{prettyDuration}}</div>
         <div class="track__delete js-delete">Remove</div>
     </div>
     <div class="track__seek">

@@ -33,6 +33,7 @@ Monomono = (function($){
         this.currentPlayingTrack = null;
         this.currentPlayingElement = null;
         this.facebookUser = null;
+        this.playlist = [];
 
         this.selectors = {
             searchResult: $('.js-search-result'),
@@ -107,6 +108,9 @@ Monomono = (function($){
             // Skapar en container för att lättare ha event listeners redo
             var $trackElement = $('<li>');
             $trackElement.addClass('track');
+            if (prependTo.closest('.search-result').length && this.playlistIds.indexOf(tracks[i].id) != -1) {
+                $trackElement.addClass('added');
+            }
 
             tracks[i].prettyDuration = formatDuration(tracks[i].duration);
             tracks[i].artwork_url = tracks[i].artwork_url || '/assets/static/img/default.jpg';
@@ -375,6 +379,10 @@ Monomono = (function($){
 
         this.socket.on('playlist', function(playlist, currentTrackNumber) {
             console.log('playlist', playlist);
+            _this.playlistIds = [];
+            for (var i = 0; i < playlist.length; i++) {
+                _this.playlistIds.push(playlist[i].id);
+            }
             _this.populatePlaylist(playlist, currentTrackNumber);
         });
 

@@ -149,6 +149,7 @@ Monomono = (function($){
                     track.addedBy = _this.facebookUser;
                     if (trackElement.hasClass('added')) return;
                     trackElement.addClass('added');
+                    console.log('new track', track);
                     _this.socket.emit('newtrack', track);
                 });
             });

@@ -58,13 +58,14 @@ io.on('connection', function(socket) {
 
     socket.on('joinroom', function(room) {
         user.room = room;
+        socket.join(room);
 
         rooms[user.room].users.push(user);
         io.to(user.room).emit('updatedUsers', rooms[user.room].users);
 
         if (rooms[user.room].playlist.length) {
             console.log('sending first song');
-            socket.emit('playSong', rooms[user.room].playlist[rooms[user.room].currentTrack], (new Date()).getTime() - start);
+            socket.emit('playSong', rooms[user.room].playlist[rooms[user.room].currentTrack], (new Date()).getTime() - rooms[user.room].start);
             socket.emit('playlist', rooms[user.room].playlist, rooms[user.room].currentTrack);
         }
         if (rooms[user.room].chat.length) {
@@ -80,6 +81,7 @@ io.on('connection', function(socket) {
     });
 
     socket.on('newtrack', function(track) {
+        console.log('new track');
         for (var i = 0; i < rooms[user.room].playlist.length; i++) {
             if (rooms[user.room].playlist[i].id == track.id) {
                 socket.emit('inqueue');

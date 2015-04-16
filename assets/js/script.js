@@ -47,7 +47,10 @@ Monomono = (function($){
             searchInput: $('.js-search-input'),
             deleteSong: $('.js-delete'),
             login: $('.js-login'),
-            userCount: $('.js-number-of-users')
+            userCount: $('.js-number-of-users'),
+            chatForm: $('.chat-container form'),
+            chatLog: $('#messages ul'),
+            chatToggle: $('.chat-container h2 small')
         };
 
         this.settings = {
@@ -68,6 +71,7 @@ Monomono = (function($){
     MMP.login = function(response) {
         console.log('statusChangeCallback');
         console.log(response);
+        var _this = this;
         // The response object is returned with a status field that lets the
         // app know the current login status of the person.
         // Full docs on the response object can be found in the documentation
@@ -78,6 +82,8 @@ Monomono = (function($){
                 Mono.facebookUser = response;
                 console.log('logged in', response);
                 $('.js-login').text('Log out ' + response.first_name).addClass('loggedin');
+                _this.selectors.chatForm.find('input').removeAttr('disabled');
+                _this.socket.emit('fb-login', response);
             });
         } else if (response.status === 'not_authorized') {
             // The person is logged into Facebook, but not your app.
@@ -100,6 +106,7 @@ Monomono = (function($){
             $trackElement.addClass('track');
 
             tracks[i].prettyDuration = formatDuration(tracks[i].duration);
+            tracks[i].artwork_url = tracks[i].artwork_url || '/assets/static/img/default.jpg';
 
             var html = Marmelad.templates.searchtrack(tracks[i]);
             $trackElement.html(html);
@@ -175,6 +182,7 @@ Monomono = (function($){
          }, function(sound){
             _this.currentPlayingTrack = sound;
              if (sound) sound.play();
+             document.title = track.title + ' - monomono';
          });
     };
 
@@ -215,13 +223,11 @@ Monomono = (function($){
     // End Keyboard control
 
     MMP.toggleSearch = function(){
-
         if (db.classList.contains('search--open')) {
             db.classList.remove('search--open');
             this.selectors.searchResult.empty();
         } else {
             db.classList.add('search--open');
-
         }
     }
 
@@ -234,6 +240,10 @@ Monomono = (function($){
 
         this.selectors.iosPlay.on('click', function() {
             //currentTrack.play();
+        });
+
+        this.selectors.chatToggle.on('click', function() {
+            $(this).closest('.chat-container').toggleClass('show');
         });
 
         this.selectors.login.on('click', function() {
@@ -330,6 +340,26 @@ Monomono = (function($){
             dj.keydown(shortKeys);
         });
 
+        this.selectors.chatForm.on('submit', function(e) {
+            e.preventDefault();
+            var msg = $('input', this).val();
+            _this.socket.emit('chatMsg', msg, _this.facebookUser);
+            $('input', this).val('');
+        });
+
+        this.selectors.chatForm.on('click', function() {
+            if ($('input', this).attr('disabled'))
+                alert("We want to know who's sending them dirty messages.\nLog in to chat.")
+        });
+
+        $('input', this.selectors.chatForm).on('blur focus', function(e) {
+            if (e.type == 'focus') {
+                dj.unbind('keydown');
+            } else {
+                dj.keydown(shortKeys);
+            }
+        });
+
         // On init.
         (function(){
             dj.keydown(shortKeys);
@@ -358,9 +388,21 @@ Monomono = (function($){
             alert("That song is already in the queue. Don't be a dick!");
         });
 
-        this.socket.on('updatedUsers', function(num) {
-            console.log('update users', num);
-            _this.selectors.userCount.text(num);
+        this.socket.on('updatedUsers', function(users) {
+            console.log('update users', users);
+            _this.selectors.userCount.text(users.length);
+        });
+
+        this.socket.on('updateChat', function(user) {
+            var html = Marmelad.templates.chatmessage(user);
+            _this.selectors.chatLog.append(html);
+        });
+
+        this.socket.on('allChat', function(chat) {
+            for (var i = 0; i < chat.length; i++) {
+                var html = Marmelad.templates.chatmessage(chat[i]);
+                _this.selectors.chatLog.append(html);
+            }
         });
     };
 

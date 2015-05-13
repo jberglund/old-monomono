@@ -53,21 +53,21 @@ io.on('connection', function(socket) {
         id: socket.id,
         name: 'anonymous',
         img: '/assets/static/img/default.jpg',
-        room: ''
+        room: '',
+        socket: socket
     };
 
     /*
         FRONTPAGE
     */
     socket.on('getRooms', function() {
-        //console.log('getting rooms', rooms);
-        var tempRooms = []
+        var tempRooms = [];
         for (var room in rooms) {
             var temp = rooms[room];
             temp.name = room;
             tempRooms.push(temp);
         }
-        socket.emit('rooms', tempRooms);
+        user.socket.emit('rooms', tempRooms);
     });
 
     socket.on('newroom', function(room) {

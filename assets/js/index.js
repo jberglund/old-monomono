@@ -6,10 +6,32 @@ window.fbAsyncInit = function() {
         version    : 'v2.2' // use version 2.2
     });
 
-    FB.getLoginStatus(function(response) {
-        console.log(response);
-    });
+    FB.getLoginStatus(login);
 };
+
+function login(response) {
+    console.log('statusChangeCallback');
+    console.log(response);
+    var _this = this;
+    // The response object is returned with a status field that lets the
+    // app know the current login status of the person.
+    // Full docs on the response object can be found in the documentation
+    // for FB.getLoginStatus().
+    if (response.status === 'connected') {
+        // Logged into your app and Facebook.
+        FB.api('/me', function(response) {
+            console.log('logged in', response);
+            $('.js-login').text('Log out ' + response.first_name).addClass('loggedin');
+        });
+    } else if (response.status === 'not_authorized') {
+        // The person is logged into Facebook, but not your app.
+        console.log('User not logged in');
+    } else {
+        // The person is not logged into Facebook, so we're not sure if
+        // they are logged into this app or not.
+        console.log('User not logged in');
+    }
+}
 
 (function() {
     var socketUrl = location.hostname === 'localhost' ? 'http://127.0.0.1:5000' : 'https://monomono.herokuapp.com/',
@@ -32,4 +54,8 @@ window.fbAsyncInit = function() {
         socket.emit('newroom', room);
         location.href = '/' + room;
     });
+
+    $(document).on('click', '.js-login', function() {
+        FB.login(login, { scope: 'public_profile, email' });
+    })
 })();

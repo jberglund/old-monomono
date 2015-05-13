@@ -144,6 +144,7 @@ io.on('connection', function(socket) {
                 io.to(user.room).emit('playlist', rooms[user.room].playlist, rooms[user.room].currentTrack);
             }
         }
+        updatePlaylist(user.room);
     });
 
     socket.on('chatMsg', function(msg, usr) {

@@ -34,6 +34,42 @@ function login(response) {
 }
 
 (function() {
+    function resizeHexes() {
+        $('.room').appendTo('.rooms');
+        $('.room.fake').remove();
+        $('.rooms .row').remove();
+        var offTop = $('.rooms .room').eq(0).offset().top,
+            fakePos = 0,
+            roomWidth = 0,
+            count = $('.rooms .room').length,
+            $row = $('');
+
+        for (var i = 0; i < count; i++) {
+            $room = $('.rooms .room').eq(i);
+            if (fakePos === 0 && $room.offset().top > offTop) {
+                $('.rooms .fake').remove();
+                roomWidth = i;
+                fakePos = i * 2 - 1;
+                break;
+            }
+        }
+
+        var i = 0,
+            even = true;
+        while (i < count) {
+            var to = (even ? roomWidth : roomWidth - 1);
+            $('.rooms .room').slice(i, i + to).wrapAll('<div class="row">');
+            even = !even;
+            i += to;
+        }
+
+        var $lastRow = $('.rooms > div:last-child');
+        console.log($lastRow.children().length % 2, $lastRow.prev().children().length % 2);
+        if ($lastRow.children().length % 2 === $lastRow.prev().children().length % 2) {
+            $lastRow.append('<div class="room fake">');
+        }
+    }
+
     var socketUrl = location.hostname === 'localhost' ? 'http://127.0.0.1:5000' : 'https://monomono.herokuapp.com/',
         socket = io.connect(socketUrl, { resource: 'assets/js/vendor/socket.js' });
 
@@ -42,11 +78,26 @@ function login(response) {
     socket.on('rooms', function(rooms) {
         console.log('rooms', rooms);
         for (var i = 0; i < rooms.length; i++) {
-            $('.rooms').prepend('<li><a href="/' + rooms[i] + '">' + rooms[i] + '</a></li>')
+            $('.rooms').prepend('<div class="room"><svg><use xlink:href="#hexagon"></use></svg><a href="/' + rooms[i] + '">' + rooms[i] + '</a></div>')
         }
+        /* for testing many hexes
+        for (var i = 0; i < rooms.length; i++) {
+            $('.rooms').prepend('<div class="room"><svg><use xlink:href="#hexagon"></use></svg><a href="/' + rooms[i] + '">' + rooms[i] + '</a></div>')
+        }
+        for (var i = 0; i < rooms.length; i++) {
+            $('.rooms').prepend('<div class="room"><svg><use xlink:href="#hexagon"></use></svg><a href="/' + rooms[i] + '">' + rooms[i] + '</a></div>')
+        }*/
+
+        resizeHexes();
     });
 
-    $(document).on('click', '.rooms .new', function() {
+    var resizeST;
+    $(window).on('resize', function() {
+        clearTimeout(resizeST);
+        resizeSt = setTimeout(resizeHexes, 500);
+    });
+
+    $(document).on('click', '.new-room', function() {
         var room = '';
         while (!room) {
             room = prompt('What would you like to call this room?');
@@ -59,5 +110,5 @@ function login(response) {
 
     $(document).on('click', '.js-login', function() {
         FB.login(login, { scope: 'public_profile, email' });
-    })
+    });
 })();

@@ -251,11 +251,12 @@ Monomono = (function($){
         });
 
         this.selectors.chatToggle.on('click', function() {
-            $(this).toggleClass('show');
+            $(this).parent().toggleClass('show');
         });
 
         this.selectors.login.on('click', function() {
             var $this = $(this);
+
             if ($this.hasClass('loggedin')) {
                 FB.logout(function() {
                     $this.text('Log in').removeClass('loggedin');

@@ -244,7 +244,7 @@ Monomono = (function($){
 
         this.selectors.chatToggle.on('click', function() {
             console.log('msg')
-            $(this).toggleClass('show');
+            $(this).parent('.chat-wrapper').toggleClass('show');
         });
 
         this.selectors.login.on('click', function() {

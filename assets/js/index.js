@@ -52,7 +52,6 @@ function login(response) {
             room = prompt('What would you like to call this room?');
             if (room === null) return;
         }
-        return;
 
         socket.emit('newroom', room);
         location.href = '/' + room;

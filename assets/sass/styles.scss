@@ -363,7 +363,7 @@ ul {
 
 .playlist {
 	position: relative;
-
+	z-index: 3;
 
 	.plays { display: none; }
 }
@@ -375,7 +375,7 @@ ul {
 	bottom: 0;
 	right: 0;
 	overflow: hidden;
-
+	z-index: 4;
 	pointer-events: none;
 	&.show{
 
@@ -405,7 +405,6 @@ ul {
 }
 
 .chat-container {
-
 	top: calc(100vh - 80px);
 	height: calc(100vh - 120px);
 	right: 0;
@@ -414,15 +413,14 @@ ul {
 	// rbga(0,0,0, 0.80)
 	z-index: 10;
 	transform: translateX(100%);
-	transition: 1500ms opacity $default-ease;
+	transition: 1500ms all $default-ease;
 	transition-delay: 500ms;
 	opacity: 0;
 	.show & {
 		transform: translateX(0);
 		opacity: 1;
 		top: 120px;
-
-		h2 small { transform: translateY(-50%) rotate(180deg); }
+		pointer-events: all;
 	}
 
 	h2 {
@@ -431,19 +429,7 @@ ul {
 		text-align: center;
 		position: relative;
 
-		small {
-			position: absolute;
-			right: 10px;
-			top: 50%;
-			transition: transform .3s ease;
-			transform: translateY(-50%);
-			border: 1px solid #333;
-			border-radius: 50%;
-			width: 30px;
-			height: 30px;
-			line-height: 30px;
-			cursor: pointer;
-		}
+
 	}
 
 	input {
@@ -455,7 +441,23 @@ ul {
 		width: 100%;
 		height: 60px;
 		padding: 15px;
+		color: white;
 	}
+}
+.close-button{
+	position: absolute;
+	right: 10px;
+	top: 1em;
+	text-align: center;
+	transition: transform .3s ease;
+	transform: translateY(-50%);
+	border: 1px solid #333;
+	border-radius: 50%;
+	width: 30px;
+	height: 30px;
+	line-height: 30px;
+	cursor: pointer;
+	z-index: 5;
 }
 
 #messages {

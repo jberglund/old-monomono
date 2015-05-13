@@ -52,7 +52,7 @@ Monomono = (function($){
             userCount: $('.js-number-of-users'),
             chatForm: $('.chat-container form'),
             chatLog: $('#messages ul'),
-            chatToggle: $('.chat-button')
+            chatToggle: $('.js-toggle-chat')
         };
 
         this.settings = {
@@ -251,8 +251,9 @@ Monomono = (function($){
         });
 
         this.selectors.chatToggle.on('click', function() {
-            $(this).parent().toggleClass('show');
+            $(this).closest('.chat-wrapper').toggleClass('show');
         });
+
 
         this.selectors.login.on('click', function() {
             var $this = $(this);

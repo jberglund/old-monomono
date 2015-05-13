@@ -16,6 +16,7 @@ window.fbAsyncInit = function() {
         socket = io.connect(socketUrl, { resource: 'assets/js/vendor/socket.js' });
 
     socket.emit('getRooms');
+    console.log('getting rooms', socket);
     socket.on('rooms', function(rooms) {
         console.log('rooms', rooms);
         for (var i = 0; i < rooms.length; i++) {

@@ -73,9 +73,12 @@ io.on('connection', function(socket) {
     socket.on('newroom', function(room) {
         console.log('new room', room);
         rooms[room] = {
-            playlist: []
+            playlist: [],
+            users: []
         };
-        updatePlaylist(room);
+        roomsDb.insert({name:room,playlist: rooms[room].playlist}, function(err) {
+            if (err) throw err;
+        });
     });
 
 
@@ -186,7 +189,7 @@ function playNextSong(room) {
 }
 
 function getUser(room, id, callback) {
-    console.log('getuser', room);
+    console.log('getuser', rooms[room]);
     if (!room) return;
     var users = rooms[room].users;
     for (var i = 0; i < users.length; i++) {

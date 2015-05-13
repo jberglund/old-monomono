@@ -150,7 +150,7 @@ io.on('connection', function(socket) {
     socket.on('chatMsg', function(msg, usr) {
         usr.msg = msg;
         console.log('chat');
-        chat.push(usr);
+        rooms[user.room].chat.push(usr);
         io.to(user.room).emit('updateChat', usr);
     });
 

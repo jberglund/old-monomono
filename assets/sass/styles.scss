@@ -15,7 +15,7 @@ $menu:	 				$light-yellow;
 $active-track-bg: 		$purple;
 $secondary-bg-color:	$light-yellow;
 
-$default-ease: cubic-bezier(0.230, 1.000, 0.320, 1.000);
+$default-ease: cubic-bezier(0.76, 0.18, 0.32, 1.01);
 
 *, *:after,*:before{
 	box-sizing: border-box;
@@ -392,12 +392,13 @@ ul {
 	width: 100px;
 	background-color: #feffba;
 	overflow: hidden;
-	transition: 1500ms all $default-ease;
+	transition: 700ms all $default-ease;
 	border-radius: 50%;
-
+	transition-delay: 300ms;
 	.show &{
-		height: 2000px;
-		width: 2000px;
+		transition-delay: 0ms;
+		height: 200vw;
+		width: 200vw;
 		bottom: 50%;
 		right: 50%;
 		transform: translate(50%, 50%);
@@ -412,12 +413,13 @@ ul {
 	background-color: #feffba;
 	// rbga(0,0,0, 0.80)
 	z-index: 10;
-	transform: translateX(100%);
-	transition: 1500ms all $default-ease;
-	transition-delay: 500ms;
+
+	transition: 500ms all $default-ease;
+	transition-delay: 0ms;
 	opacity: 0;
 	.show & {
-		transform: translateX(0);
+		transition-delay: 500ms;
+
 		opacity: 1;
 		top: 120px;
 		pointer-events: all;

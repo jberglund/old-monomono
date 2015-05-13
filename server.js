@@ -17,7 +17,6 @@ app.get('/:room', function(req, res) {
     var options = {
         root: __dirname + '/dist/',
     };
-    console.log('get rooms', rooms);
     if (!rooms[req.params.room]) {
         res.sendFile('noroom.html', options);
         return;
@@ -36,8 +35,9 @@ mongo.connect(mongoUri, function(error, db) {
         if (err) throw err;
         for (var i = 0; i < docs.length; i++) {
             rooms[docs[i].name] = {
+                name: docs[i].name,
                 playlist: docs[i].playlist,
-                start: (new Date()).getTime(),
+                start: 0,
                 currentTrack: 0,
                 songTimeout: null,
                 users: [],
@@ -48,7 +48,6 @@ mongo.connect(mongoUri, function(error, db) {
 });
 
 io.on('connection', function(socket) {
-    console.log('connected to io', rooms);
     var user = {
         id: socket.id,
         name: 'anonymous',
@@ -71,7 +70,6 @@ io.on('connection', function(socket) {
     });
 
     socket.on('newroom', function(room) {
-        console.log('new room', room);
         rooms[room] = {
             playlist: [],
             users: []
@@ -80,8 +78,6 @@ io.on('connection', function(socket) {
             if (err) throw err;
         });
     });
-
-
 
     /*
         ROOMS
@@ -94,8 +90,14 @@ io.on('connection', function(socket) {
 
         if (rooms[user.room].playlist.length) {
             console.log('sending first song');
-            socket.emit('playSong', rooms[user.room].playlist[rooms[user.room].currentTrack], (new Date()).getTime() - rooms[user.room].start);
-            socket.emit('playlist', rooms[user.room].playlist, rooms[user.room].currentTrack);
+            if (rooms[user.room].start === 0) {
+                rooms[user.room].start = (new Date()).getTime();
+                rooms[user.room].currentTrack = -1;
+                playNextSong(user.room);
+            } else {
+                socket.emit('playSong', rooms[user.room].playlist[rooms[user.room].currentTrack], (new Date()).getTime() - rooms[user.room].start);
+                socket.emit('playlist', rooms[user.room].playlist, rooms[user.room].currentTrack);
+            }
         }
         if (rooms[user.room].chat.length) {
             socket.emit('allChat', rooms[user.room].chat);
@@ -111,7 +113,7 @@ io.on('connection', function(socket) {
             }
         }
         rooms[user.room].playlist.push(track);
-        if (rooms[user.room].playlist.length === 1) playNextSong();
+        if (rooms[user.room].playlist.length === 1) playNextSong(user.room);
         io.to(user.room).emit('playlist', rooms[user.room].playlist, rooms[user.room].currentTrack);
         updatePlaylist(user.room);
     });
@@ -172,24 +174,27 @@ function updatePlaylist(room) {
     });
 }
 
-function playNextSong(room) {
-    rooms[room].currentTrack++;
-    if (rooms[room].currentTrack == rooms[room].playlist.length) {
-        rooms[room].currentTrack--;
-        var lastSong = rooms[room].playlist.shift(0,1);
-        rooms[room].playlist.push(lastSong);
+function playNextSong(r, start) {
+    console.log('playing next song', r);
+    var room = rooms[r];
+    room.currentTrack++;
+    if (room.currentTrack == room.playlist.length) {
+        room.currentTrack--;
+        var lastSong = room.playlist.shift(0,1);
+        room.playlist.push(lastSong);
     }
-    io.to(room).emit('playSong', rooms[room].playlist[currentTrack], 0);
-    io.to(room).emit('playlist', rooms[room].playlist, currentTrack);
-    rooms[room].start = (new Date()).getTime();
-    clearTimeout(rooms[room].songTimeout);
-    rooms[room].songTimeout = setTimeout(function() {
-        playNextSong(room);
-    }, rooms[room].playlist[rooms[room].currentTrack].duration + 10);
+    io.to(r).emit('playSong', room.playlist[room.currentTrack], 0);
+    io.to(r).emit('playlist', room.playlist, room.currentTrack);
+    room.start = (new Date()).getTime();
+    clearTimeout(room.songTimeout);
+    console.log('setting up next song in: ', room.playlist[room.currentTrack].duration + 10);
+    room.songTimeout = setTimeout(function() {
+        playNextSong(r);
+    }, room.playlist[room.currentTrack].duration + 10);
 }
 
 function getUser(room, id, callback) {
-    console.log('getuser', rooms[room]);
+    console.log('getuser from room: ', room);
     if (!room) return;
     var users = rooms[room].users;
     for (var i = 0; i < users.length; i++) {

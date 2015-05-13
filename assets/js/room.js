@@ -34,6 +34,7 @@ Monomono = (function($){
         this.currentPlayingElement = null;
         this.facebookUser = null;
         this.playlist = [];
+        this.playlistIds = [];
 
         this.selectors = {
             searchResult: $('.js-search-result'),
@@ -172,7 +173,6 @@ Monomono = (function($){
 
     MMP.playTrack = function(track, skipTo){
         var _this = this;
-
          SC.stream(track.stream_url, {
              useHTML5Audio: true,
              preferFlash: false,

@@ -44,6 +44,7 @@ mongo.connect(mongoUri, function(error, db) {
                 chat: []
             };
         }
+        console.log('all rooms', rooms);
     });
 });
 

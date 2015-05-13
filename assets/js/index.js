@@ -54,6 +54,8 @@ function login(response) {
             }
         }
 
+        if (roomWidth === 0) return;
+
         var i = 0,
             even = true;
         while (i < count) {

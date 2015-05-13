@@ -33,7 +33,6 @@ Monomono = (function($){
         this.currentPlayingTrack = null;
         this.currentPlayingElement = null;
         this.facebookUser = null;
-        this.playlist = [];
 
         this.selectors = {
             searchResult: $('.js-search-result'),
@@ -60,9 +59,6 @@ Monomono = (function($){
 
 
         this.socket = io.connect(this.settings.url, { resource: 'assets/js/vendor/socket.js' });
-        var params = location.pathname.split('/');
-        if (params.length > 1)
-            this.socket.emit('joinroom', params[1]);
 
         this.bindEvents();
         this.bindSockets();
@@ -108,9 +104,6 @@ Monomono = (function($){
             // Skapar en container för att lättare ha event listeners redo
             var $trackElement = $('<li>');
             $trackElement.addClass('track');
-            if (prependTo.closest('.search-result').length && this.playlistIds.indexOf(tracks[i].id) != -1) {
-                $trackElement.addClass('added');
-            }
 
             tracks[i].prettyDuration = formatDuration(tracks[i].duration);
             tracks[i].artwork_url = tracks[i].artwork_url || '/assets/static/img/default.jpg';
@@ -153,7 +146,6 @@ Monomono = (function($){
                     track.addedBy = _this.facebookUser;
                     if (trackElement.hasClass('added')) return;
                     trackElement.addClass('added');
-                    console.log('new track', track);
                     _this.socket.emit('newtrack', track);
                 });
             });
@@ -241,7 +233,7 @@ Monomono = (function($){
 
     MMP.bindEvents = function(){
         var _this = this;
-
+        console.log('ms!!!g')
         this.selectors.search.on('click', function(){
             //_this.toggleSearch();
         });
@@ -251,6 +243,7 @@ Monomono = (function($){
         });
 
         this.selectors.chatToggle.on('click', function() {
+            console.log('msg')
             $(this).toggleClass('show');
         });
 
@@ -263,7 +256,7 @@ Monomono = (function($){
             } else {
                 FB.login(function(response) {
                     _this.login(response);
-                }, { scope: 'public_profile, email' });
+                });
             }
         });
 
@@ -379,10 +372,6 @@ Monomono = (function($){
 
         this.socket.on('playlist', function(playlist, currentTrackNumber) {
             console.log('playlist', playlist);
-            _this.playlistIds = [];
-            for (var i = 0; i < playlist.length; i++) {
-                _this.playlistIds.push(playlist[i].id);
-            }
             _this.populatePlaylist(playlist, currentTrackNumber);
         });
 
@@ -392,7 +381,6 @@ Monomono = (function($){
 
         this.socket.on('playSong', function(track, skipTo) {
             if (!track) return;
-            console.log('play song', track, skipTo);
             SC.streamStopAll();
             _this.playTrack(track, skipTo);
         });

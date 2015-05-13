@@ -1,26 +1,3 @@
-/*
-	Child of: Double lower dash
-		## Example: parent--unique-child
-
-	States: Double dashed element name
-		## Example: element--state-name
-
-	Preventing namespace leaking and odd-ball selectors.
-
-	element{
-		&__unique-child{
-
-		}
-		&--state-name{
-
-		}
-	}
-
-	produces clean and readable CSS when compiled:
-	.element__unique-child{ }
-	.element--state-name{ }
-
-*/
 
 $purple: 				#8273ed;
 $white: 				#fff;
@@ -38,8 +15,8 @@ $menu:	 				$light-yellow;
 $active-track-bg: 		$purple;
 $secondary-bg-color:	$light-yellow;
 
-
 $default-ease: cubic-bezier(0.230, 1.000, 0.320, 1.000);
+
 *, *:after,*:before{
 	box-sizing: border-box;
 }
@@ -99,7 +76,7 @@ h1, h2, h3, h4{
 	margin: 0;
 	margin-top: 120px;
 	list-style: none;
-
+	display: none;
 	li {
 		//background: #fff;
 		//display: inline-block;
@@ -392,17 +369,46 @@ h1, h2, h3, h4{
 	.plays { display: none; }
 }
 
-.chat-container {
+.chat-wrapper{
+	width: 300px;
+	height: calc(100vh - 120px);
 	position: fixed;
-	top: calc(100% - 80px);
-	right: 0;
-	left: 70%;
 	bottom: 0;
-	background: #f0f0f0;
-	z-index: 10;
-	transition: top .3s ease;
+	right: 0;
+	overflow: hidden;
+}
+.chat-button{
+	position: absolute;
+	bottom: 1em;
+	right: 1em;
+	height: 100px;
+	width: 100px;
+	background-color: #feffba;
+	overflow: hidden;
+	transition: 1500ms all $default-ease;
+	border-radius: 50%;
+
 
 	&.show {
+		height: 2000px;
+		width: 2000px;
+		bottom: 50%;
+		right: 50%;
+		transform: translate(50%, 50%);
+	}
+}
+
+.chat-container {
+	display: none;
+	top: calc(100vh - 80px);
+	height: calc(100vh - 120px);
+	right: 0;
+	width: 300px;
+	background: #171716;
+	// rbga(0,0,0, 0.80)
+	z-index: 10;
+	transition: top .3s ease;
+	.show  & {
 		top: 120px;
 
 		h2 small { transform: translateY(-50%) rotate(180deg); }
@@ -431,11 +437,13 @@ h1, h2, h3, h4{
 
 	input {
 		position: absolute;
+		background-color: black;
+		border: none;
 		bottom: 0;
 		left: 0;
 		width: 100%;
-		height: 40px;
-		padding: 5px;
+		height: 60px;
+		padding: 15px;
 	}
 }
 

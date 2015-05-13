@@ -35,7 +35,6 @@ mongo.connect(mongoUri, function(error, db) {
         if (err) throw err;
         for (var i = 0; i < docs.length; i++) {
             rooms[docs[i].name] = {
-                name: docs[i].name,
                 playlist: docs[i].playlist,
                 start: 0,
                 currentTrack: 0,
@@ -53,8 +52,7 @@ io.on('connection', function(socket) {
         id: socket.id,
         name: 'anonymous',
         img: '/assets/static/img/default.jpg',
-        room: '',
-        socket: socket
+        room: ''
     };
 
     /*
@@ -63,11 +61,9 @@ io.on('connection', function(socket) {
     socket.on('getRooms', function() {
         var tempRooms = [];
         for (var room in rooms) {
-            var temp = rooms[room];
-            temp.name = room;
-            tempRooms.push(temp);
+            tempRooms.push(room);
         }
-        user.socket.emit('rooms', tempRooms);
+        socket.emit('rooms', tempRooms);
     });
 
     socket.on('newroom', function(room) {
@@ -84,11 +80,12 @@ io.on('connection', function(socket) {
         ROOMS
     */
     socket.on('joinroom', function(room) {
+        console.log('joining room', room);
         user.room = room;
         socket.join(room);
         rooms[user.room].users.push(user);
         io.to(user.room).emit('updatedUsers', rooms[user.room].users);
-
+        console.log('length', rooms[user.room].playlist.length);
         if (rooms[user.room].playlist.length) {
             console.log('sending first song');
             if (rooms[user.room].start === 0) {

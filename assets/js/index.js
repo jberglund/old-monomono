@@ -42,7 +42,7 @@ function login(response) {
     socket.on('rooms', function(rooms) {
         console.log('rooms', rooms);
         for (var i = 0; i < rooms.length; i++) {
-            $('.rooms').prepend('<li><a href="/' + rooms[i].name + '">' + rooms[i].name + '</a></li>')
+            $('.rooms').prepend('<li><a href="/' + rooms[i] + '">' + rooms[i] + '</a></li>')
         }
     });
 

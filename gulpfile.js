@@ -9,8 +9,8 @@ wrap = require('gulp-wrap'),
 concat = require('gulp-concat'),
 declare = require('gulp-declare'),
 handlebars = require('gulp-handlebars'),
-runSeq = require('run-sequence');
-
+runSeq = require('run-sequence'),
+symbols = require('gulp-svg-symbols');
 /*gulp.task('express', function() {
 	var express = require('express');
 	var app = express();
@@ -69,6 +69,12 @@ gulp.task('js', function() {
 	.pipe(gulp.dest('dist/assets/js'));
 });
 
+gulp.task('sprites', function () {
+  return gulp.src('assets/svg/*.svg')
+    .pipe(symbols())
+    .pipe(gulp.dest('dist/assets/svg/'));
+});
+
 gulp.task('assets', function(){
 	return gulp.src('assets/static/*/**')
 	.pipe(gulp.dest('dist/assets/static'));
@@ -91,6 +97,7 @@ gulp.task('watch', function() {
 	gulp.watch('assets/sass/*.scss', ['sass']);
 	gulp.watch('assets/js/*.js', ['js']);
 	gulp.watch('assets/templates/*.hbs', ['templates']);
+	gulp.watch('assets/svg/*.svg', ['sprites']);
 	gulp.watch('views/*.html', ['html']);
 	gulp.watch('dist/*.html', notifyLiveReload);
 	gulp.watch('dist/assets/css/*.css', notifyLiveReload);
@@ -98,7 +105,7 @@ gulp.task('watch', function() {
 
 });
 
-gulp.task('default', ['sass', 'js', 'livereload', 'assets', 'templates', 'watch', 'html'], function() {
+gulp.task('default', ['sass', 'js', 'livereload', 'assets', 'templates', 'watch', 'html', 'sprites'], function() {
 
 });
 

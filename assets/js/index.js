@@ -1,14 +1,3 @@
-window.fbAsyncInit = function() {
-    FB.init({
-        appId      : '950742798299424',
-        cookie     : true,  // enable cookies to allow the server to access the session
-        xfbml      : true,  // parse social plugins on this page
-        version    : 'v2.2' // use version 2.2
-    });
-
-    FB.getLoginStatus(login);
-};
-
 function login(response) {
     console.log('statusChangeCallback');
     console.log(response);
@@ -114,3 +103,14 @@ function login(response) {
         FB.login(login, { scope: 'public_profile, email' });
     });
 })();
+
+window.fbAsyncInit = function() {
+    FB.init({
+        appId      : '950742798299424',
+        cookie     : true,  // enable cookies to allow the server to access the session
+        xfbml      : true,  // parse social plugins on this page
+        version    : 'v2.2' // use version 2.2
+    });
+
+    FB.getLoginStatus(login);
+};
